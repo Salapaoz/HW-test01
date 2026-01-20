@@ -70,3 +70,34 @@ function del(id) {
 
 render();
 
+// ขอ permission แจ้งเตือน
+if ("Notification" in window && Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+// เช็กแจ้งเตือน วันละครั้ง
+function checkNotify() {
+  const now = new Date();
+  const today = now.toDateString();
+
+  data.forEach(h => {
+    if (h.done) return;
+
+    const due = new Date(h.due);
+    const diff = Math.ceil((due - now) / 86400000);
+
+    if (diff <= 3 && h.lastNotify !== today) {
+      if (Notification.permission === "granted") {
+        new Notification("📚 การบ้านใกล้ส่ง!", {
+          body: `${h.subject} - ${h.title}\nเหลือ ${diff} วัน`,
+        });
+        h.lastNotify = today;
+      }
+    }
+  });
+
+  localStorage.setItem("hw", JSON.stringify(data));
+}
+
+// เช็กทุกครั้งที่เปิดเว็บ
+checkNotify();

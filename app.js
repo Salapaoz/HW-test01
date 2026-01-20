@@ -1,67 +1,70 @@
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-function openForm() {
-  document.getElementById("modal").style.display = "block";
-}
-
-function closeForm() {
-  document.getElementById("modal").style.display = "none";
-}
-
-function saveTask() {
-  const task = {
-    start: startDate.value,
-    due: dueDate.value,
-    subject: subject.value,
-    title: title.value,
-    detail: detail.value,
-    teacher: teacher.value
-  };
-
-  tasks.push(task);
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-  closeForm();
-  render();
-}
-
-function render() {
-  taskList.innerHTML = "";
-  const today = new Date();
-
-  tasks.forEach(t => {
-    const due = new Date(t.due);
-    const diff = (due - today) / (1000*60*60*24);
-
-    const card = document.createElement("div");
-    card.className = "card" + (diff <= 3 ? " danger" : "");
-
-    card.innerHTML = `
-      <h3>${t.title}</h3>
-      <p>📘 ${t.subject}</p>
-      <p>📅 ส่ง: ${t.due}</p>
-      <p>${t.detail}</p>
-      <small>👨‍🏫 ${t.teacher}</small>
-    `;
-
-    taskList.appendChild(card);
-
-    if (diff <= 3) {
-      notify(t.title);
-    }
-  });
-}
-
-function notify(title) {
-  if (Notification.permission === "granted") {
-    new Notification("ใกล้ถึงกำหนดส่ง!", {
-      body: title
-    });
-  }
-}
-
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 
-Notification.requestPermission();
+let data = JSON.parse(localStorage.getItem("hw") || "[]");
+
+const list = document.getElementById("list");
+const modal = document.getElementById("modal");
+
+addBtn.onclick = () => modal.classList.remove("hidden");
+document.querySelector(".cancel").onclick = () => modal.classList.add("hidden");
+
+document.querySelector(".save").onclick = () => {
+  data.push({
+    id: Date.now(),
+    assigned: assigned.value,
+    due: due.value,
+    subject: subject.value,
+    title: title.value,
+    detail: detail.value,
+    teacher: teacher.value,
+    done: false,
+    lastNotify: ""
+  });
+  localStorage.setItem("hw", JSON.stringify(data));
+  modal.classList.add("hidden");
+  render();
+};
+
+function render() {
+  list.innerHTML = "";
+  const now = new Date();
+
+  data.forEach(h => {
+    const d = new Date(h.due);
+    const diff = Math.ceil((d - now) / 86400000);
+
+    let cls = "";
+    if (!h.done && diff <= 3) cls = "soon";
+    if (!h.done && diff <= 1) cls = "today";
+
+    list.innerHTML += `
+      <div class="card ${cls}">
+        <h3>${h.subject} — ${h.title}</h3>
+        <small>👩‍🏫 ${h.teacher}</small><br>
+        <small>📅 ส่ง: ${h.due} (${diff} วัน)</small>
+        <p>${h.detail}</p>
+        <div class="actions">
+          <button class="done" onclick="toggle(${h.id})">✔ ส่งแล้ว</button>
+          <button class="del" onclick="del(${h.id})">🗑</button>
+        </div>
+      </div>`;
+  });
+}
+
+function toggle(id) {
+  const h = data.find(x => x.id === id);
+  h.done = !h.done;
+  localStorage.setItem("hw", JSON.stringify(data));
+  render();
+}
+
+function del(id) {
+  data = data.filter(x => x.id !== id);
+  localStorage.setItem("hw", JSON.stringify(data));
+  render();
+}
+
 render();
+

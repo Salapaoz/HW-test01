@@ -1,60 +1,65 @@
+/* ===== RESET ===== */
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  background: #f4f6ff;
-  color: #333;
+  background: #f4f6fb;
+  color: #222;
 }
 
+/* ===== HEADER ===== */
 header {
-  background: #6c8cff;
-  color: white;
-  padding: 16px 24px;
+  background: #4f6bed;
+  color: #fff;
+  padding: 16px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 header h1 {
+  font-size: 20px;
   margin: 0;
-  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 header button {
-  background: white;
-  color: #6c8cff;
+  background: #fff;
+  color: #4f6bed;
   border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-weight: bold;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-main {
-  padding: 20px;
-  display: grid;
-  gap: 16px;
+header button:hover {
+  background: #eef1ff;
 }
 
-/* Card */
+/* ===== LIST ===== */
+#list {
+  max-width: 720px;
+  margin: 20px auto;
+  padding: 0 14px;
+}
+
 .card {
-  background: white;
-  border-radius: 16px;
+  background: #fff;
+  border-radius: 14px;
   padding: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-  border-left: 6px solid #6c8cff;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  border-left: 6px solid #4f6bed;
 }
 
-.card.soon {
-  border-color: #ffb703;
-}
-
-.card.today {
-  border-color: #ff595e;
-}
+.card.soon { border-left-color: #ff9800; }
+.card.today { border-left-color: #f44336; }
 
 .card h3 {
   margin: 0 0 6px;
@@ -64,86 +69,94 @@ main {
   color: #666;
 }
 
-.card .actions {
+/* ===== ACTION BUTTONS ===== */
+.actions {
+  display: flex;
+  gap: 10px;
   margin-top: 10px;
 }
 
-.card button {
+.actions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
   border: none;
-  padding: 6px 12px;
-  border-radius: 12px;
   cursor: pointer;
 }
 
-.card .done {
-  background: #52b788;
-  color: white;
+.done {
+  background: #4caf50;
+  color: #fff;
 }
 
-.card .del {
-  background: #ff595e;
-  color: white;
-  margin-left: 6px;
+.del {
+  background: #f44336;
+  color: #fff;
 }
 
-/* Modal */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
-
+/* ===== MODAL ===== */
 .hidden {
   display: none;
 }
 
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
 .modal-card {
-  background: white;
-  width: 100%;
+  background: #fff;
+  width: 90%;
   max-width: 420px;
+  border-radius: 18px;
   padding: 20px;
-  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.2);
 }
 
 .modal-card h2 {
   margin-top: 0;
+  text-align: center;
 }
 
+/* ===== FORM ===== */
 .modal-card label {
-  display: block;
-  margin-top: 10px;
   font-size: 14px;
+  margin-top: 12px;
+  display: block;
 }
 
 .modal-card input,
 .modal-card textarea {
   width: 100%;
-  padding: 8px;
+  padding: 10px 12px;
+  margin-top: 6px;
   border-radius: 10px;
-  border: 1px solid #ccc;
-  margin-top: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
 }
 
 .modal-card textarea {
-  resize: vertical;
+  resize: none;
+  height: 80px;
 }
 
-.actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 14px;
+/* ===== MODAL BUTTONS ===== */
+.modal-card .actions {
+  margin-top: 18px;
 }
 
 .save {
-  background: #6c8cff;
-  color: white;
+  background: #4f6bed;
+  color: #fff;
+  font-weight: 600;
 }
 
 .cancel {
-  background: #ccc;
+  background: #e0e0e0;
 }
+

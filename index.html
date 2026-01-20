@@ -2,39 +2,52 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>การบ้านของฉัน</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>📚 การบ้านของฉัน</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#60a5fa" />
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <header>
+    <h1>📚 การบ้านของฉัน</h1>
+    <button id="addBtn">＋ เพิ่มการบ้าน</button>
+  </header>
 
-<header>
-  <h1>📚 การบ้านของฉัน</h1>
-  <button onclick="openForm()">➕ เพิ่มการบ้าน</button>
-</header>
+  <main id="list"></main>
 
-<main id="taskList"></main>
+  <!-- Modal -->
+  <div id="modal" class="hidden">
+    <div class="modal-card">
+      <h2>➕ เพิ่มการบ้าน</h2>
 
-<!-- ฟอร์ม -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <h2>เพิ่มการบ้าน</h2>
+      <label>📥 วันที่ได้รับมอบหมาย</label>
+      <input type="date" id="assigned">
 
-    <input type="date" id="startDate">
-    <input type="date" id="dueDate">
-    <input type="text" id="subject" placeholder="รายชื่อวิชา">
-    <input type="text" id="title" placeholder="ชื่องาน">
-    <textarea id="detail" placeholder="รายละเอียดงาน"></textarea>
-    <input type="text" id="teacher" placeholder="ชื่อครูผู้สอน">
+      <label>⏰ วันที่กำหนดส่ง</label>
+      <input type="date" id="due">
 
-    <div class="actions">
-      <button onclick="saveTask()">บันทึก</button>
-      <button onclick="closeForm()">ยกเลิก</button>
+      <label>📘 รายวิชา</label>
+      <input type="text" id="subject">
+
+      <label>📝 ชื่องาน</label>
+      <input type="text" id="title">
+
+      <label>📄 รายละเอียดงาน</label>
+      <textarea id="detail"></textarea>
+
+      <label>👩‍🏫 ครูผู้สอน</label>
+      <input type="text" id="teacher">
+
+      <div class="actions">
+        <button class="save">บันทึก</button>
+        <button class="cancel">ยกเลิก</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

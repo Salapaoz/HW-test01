@@ -6,6 +6,8 @@ let data = JSON.parse(localStorage.getItem("hw") || "[]");
 
 const list = document.getElementById("list");
 const modal = document.getElementById("modal");
+const taskList = document.getElementById("task-list");
+
 
 addBtn.onclick = () => modal.classList.remove("hidden");
 document.querySelector(".cancel").onclick = () => modal.classList.add("hidden");

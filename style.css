@@ -1,11 +1,15 @@
-body {
+* {
+  box-sizing: border-box;
   font-family: "Segoe UI", sans-serif;
-  background: #f3f6fb;
+}
+
+body {
   margin: 0;
+  background: #f3f5ff;
 }
 
 header {
-  background: #4f7cff;
+  background: #6c8cff;
   color: white;
   padding: 16px;
   display: flex;
@@ -13,40 +17,31 @@ header {
   align-items: center;
 }
 
-button {
+header button {
+  background: white;
   border: none;
-  border-radius: 8px;
   padding: 8px 14px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
-#addBtn {
-  background: #fff;
-  color: #4f7cff;
-  font-weight: bold;
-}
-
-#list {
-  padding: 20px;
-  display: grid;
-  gap: 16px;
+main {
+  padding: 16px;
 }
 
 .card {
   background: white;
+  padding: 14px;
   border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.05);
 }
 
-.card.soon { border-left: 6px solid #ffb703; }
-.card.today { border-left: 6px solid #ff595e; }
+.card.soon { border-left: 6px solid orange; }
+.card.today { border-left: 6px solid red; }
 
-.modal-card {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  width: 320px;
+.actions button {
+  margin-right: 6px;
 }
 
 #modal {
@@ -54,15 +49,31 @@ button {
   inset: 0;
   background: rgba(0,0,0,.4);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .hidden { display: none; }
 
+.modal-card {
+  background: white;
+  padding: 20px;
+  width: 320px;
+  border-radius: 16px;
+}
+
+.modal-card input,
+.modal-card textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
 .actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 12px;
 }
+
 

@@ -4,11 +4,19 @@ if ("serviceWorker" in navigator) {
 
 let data = JSON.parse(localStorage.getItem("hw") || "[]");
 
-const list = document.getElementById("list");
 const modal = document.getElementById("modal");
 const addBtn = document.getElementById("addBtn");
+const cancelBtn = document.querySelector(".cancel");
 
-addBtn.onclick = () => modal.classList.remove("hidden");
+modal.classList.add("hidden"); // บังคับซ่อนตอนโหลด
+
+addBtn.addEventListener("click", () => {
+  modal.classList.remove("hidden");
+});
+
+cancelBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
 document.querySelector(".cancel").onclick = () => modal.classList.add("hidden");
 
 document.querySelector(".save").onclick = () => {

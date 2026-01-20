@@ -171,5 +171,3 @@ self.addEventListener("fetch", e => {
     caches.match(e.request).then(r => r || fetch(e.request))
   );
 });
-icon-192.png
-icon-512.png

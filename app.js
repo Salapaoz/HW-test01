@@ -1,98 +1,67 @@
-let data = JSON.parse(localStorage.getItem("hw") || "[]");
-const modal = document.getElementById("modal");
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-function openModal() {
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
-}
-function closeModal() {
-  modal.classList.add("hidden");
+function openForm() {
+  document.getElementById("modal").style.display = "block";
 }
 
-function saveHomework() {
-  data.push({
-    id: Date.now(),
+function closeForm() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function saveTask() {
+  const task = {
+    start: startDate.value,
+    due: dueDate.value,
+    subject: subject.value,
     title: title.value,
     detail: detail.value,
-    due: due.value,
-    done: false,
-    lastNotified: null
-  });
-  localStorage.setItem("hw", JSON.stringify(data));
-  closeModal();
-  render();
-}
+    teacher: teacher.value
+  };
 
-function toggle(id) {
-  const h = data.find(x => x.id === id);
-  h.done = !h.done;
-  localStorage.setItem("hw", JSON.stringify(data));
+  tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  closeForm();
   render();
-}
-
-function del(id) {
-  data = data.filter(x => x.id !== id);
-  localStorage.setItem("hw", JSON.stringify(data));
-  render();
-}
-
-function daysLeft(due) {
-  return (new Date(due) - new Date()) / 86400000;
 }
 
 function render() {
-  list.innerHTML = "";
-  let p = 0, s = 0;
+  taskList.innerHTML = "";
+  const today = new Date();
 
-  data.forEach(h => {
-    const diff = daysLeft(h.due);
-    if (!h.done) p++;
-    if (!h.done && diff <= 3 && diff >= 0) s++;
+  tasks.forEach(t => {
+    const due = new Date(t.due);
+    const diff = (due - today) / (1000*60*60*24);
 
-    list.innerHTML += `
-      <div class="card flex justify-between ${(!h.done && diff<=3)?'due-soon':''}">
-        <div>
-          <h3 class="font-bold ${h.done?'line-through text-gray-400':''}">
-            ${h.title}
-          </h3>
-          <p class="text-sm">${h.detail}</p>
-          <p class="text-sm">⏰ ${new Date(h.due).toLocaleString()}</p>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="toggle(${h.id})" class="btn-blue">✓</button>
-          <button onclick="del(${h.id})" class="btn-gray">🗑</button>
-        </div>
-      </div>`;
-  });
+    const card = document.createElement("div");
+    card.className = "card" + (diff <= 3 ? " danger" : "");
 
-  total.textContent = data.length;
-  pending.textContent = p;
-  soon.textContent = s;
-}
+    card.innerHTML = `
+      <h3>${t.title}</h3>
+      <p>📘 ${t.subject}</p>
+      <p>📅 ส่ง: ${t.due}</p>
+      <p>${t.detail}</p>
+      <small>👨‍🏫 ${t.teacher}</small>
+    `;
 
-render();
+    taskList.appendChild(card);
 
-/* 🔔 Notification */
-document.getElementById("notifyBtn").onclick = async () => {
-  const perm = await Notification.requestPermission();
-  if (perm === "granted") alert("เปิดแจ้งเตือนเรียบร้อย ✅");
-};
-
-setInterval(checkNotifications, 60000);
-
-function checkNotifications() {
-  if (Notification.permission !== "granted") return;
-
-  const today = new Date().toDateString();
-
-  data.forEach(h => {
-    const diff = daysLeft(h.due);
-    if (!h.done && diff <= 3 && diff >= 0 && h.lastNotified !== today) {
-      new Notification("📚 ใกล้ถึงกำหนดส่ง!", {
-        body: `${h.title} เหลือ ${Math.ceil(diff)} วัน`
-      });
-      h.lastNotified = today;
-      localStorage.setItem("hw", JSON.stringify(data));
+    if (diff <= 3) {
+      notify(t.title);
     }
   });
 }
+
+function notify(title) {
+  if (Notification.permission === "granted") {
+    new Notification("ใกล้ถึงกำหนดส่ง!", {
+      body: title
+    });
+  }
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
+Notification.requestPermission();
+render();

@@ -1,0 +1,37 @@
+.card {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: .5rem;
+  border-radius: .375rem;
+  margin-top: .5rem;
+}
+
+.btn-blue {
+  background: #3b82f6;
+  color: white;
+  padding: .5rem 1rem;
+  border-radius: .375rem;
+}
+
+.btn-gray {
+  background: #94a3b8;
+  color: white;
+  padding: .5rem 1rem;
+  border-radius: .375rem;
+}
+
+.due-soon {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1 }
+  50% { opacity:.6 }
+}

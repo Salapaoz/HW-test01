@@ -1,110 +1,68 @@
-* { box-sizing: border-box; font-family: system-ui; }
-
 body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f3f6fb;
   margin: 0;
-  background: #f1f5f9;
 }
 
 header {
-  background: #60a5fa;
+  background: #4f7cff;
   color: white;
-  padding: 1rem;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-header button {
-  background: white;
-  color: #2563eb;
+button {
   border: none;
-  padding: .5rem 1rem;
-  border-radius: 999px;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+#addBtn {
+  background: #fff;
+  color: #4f7cff;
   font-weight: bold;
 }
 
-main {
-  padding: 1rem;
+#list {
+  padding: 20px;
   display: grid;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .card {
   background: white;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+
+.card.soon { border-left: 6px solid #ffb703; }
+.card.today { border-left: 6px solid #ff595e; }
+
+.modal-card {
+  background: white;
   border-radius: 16px;
-  padding: 1rem;
-  box-shadow: 0 8px 20px rgba(0,0,0,.08);
-  border-left: 6px solid #60a5fa;
+  padding: 20px;
+  width: 320px;
 }
-
-.card.soon { border-left-color: #fb923c; }
-.card.today { border-left-color: #ef4444; }
-
-.card h3 { margin: 0; }
-
-.card small { color: #64748b; }
-
-.card .actions {
-  margin-top: .5rem;
-  display: flex;
-  gap: .5rem;
-}
-
-.card button {
-  border: none;
-  border-radius: 999px;
-  padding: .3rem .8rem;
-}
-
-.done { background: #22c55e; color: white; }
-.del { background: #ef4444; color: white; }
 
 #modal {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.4);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .hidden { display: none; }
 
-.modal-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 400px;
-}
-
-label {
-  font-size: .85rem;
-  margin-top: .6rem;
-  display: block;
-}
-
-input, textarea {
-  width: 100%;
-  padding: .5rem;
-  margin-top: .2rem;
-  border-radius: 8px;
-  border: 1px solid #cbd5f5;
-}
-
 .actions {
   display: flex;
-  gap: .5rem;
-  margin-top: 1rem;
+  justify-content: space-between;
+  margin-top: 12px;
 }
 
-.save {
-  flex: 1;
-  background: #60a5fa;
-  color: white;
-}
-
-.cancel {
-  flex: 1;
-  background: #e5e7eb;
-}

@@ -1,72 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>บันทึกการบ้าน</title>
-
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#3b82f6" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>การบ้านของฉัน</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
+<body>
 
-<body class="bg-slate-100 min-h-screen">
-  <div class="max-w-4xl mx-auto p-6">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">📚 บันทึกการบ้าน</h1>
-      <button id="notifyBtn" class="bg-slate-500 text-white px-3 py-2 rounded">
-        🔔 เปิดแจ้งเตือน
-      </button>
-    </div>
+<header>
+  <h1>📚 การบ้านของฉัน</h1>
+  <button onclick="openForm()">➕ เพิ่มการบ้าน</button>
+</header>
 
-    <div class="grid grid-cols-3 gap-4 mb-6 text-center">
-      <div class="card">
-        <p>ทั้งหมด</p>
-        <p id="total" class="text-3xl font-bold">0</p>
-      </div>
-      <div class="card">
-        <p>ค้าง</p>
-        <p id="pending" class="text-3xl font-bold">0</p>
-      </div>
-      <div class="card">
-        <p>ใกล้ส่ง</p>
-        <p id="soon" class="text-3xl font-bold">0</p>
-      </div>
-    </div>
+<main id="taskList"></main>
 
-    <button onclick="openModal()" class="mb-4 bg-blue-500 text-white px-4 py-2 rounded">
-      ➕ เพิ่มการบ้าน
-    </button>
+<!-- ฟอร์ม -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h2>เพิ่มการบ้าน</h2>
 
-    <div id="list" class="space-y-4"></div>
-  </div>
+    <input type="date" id="startDate">
+    <input type="date" id="dueDate">
+    <input type="text" id="subject" placeholder="รายชื่อวิชา">
+    <input type="text" id="title" placeholder="ชื่องาน">
+    <textarea id="detail" placeholder="รายละเอียดงาน"></textarea>
+    <input type="text" id="teacher" placeholder="ชื่อครูผู้สอน">
 
-  <!-- Modal -->
-  <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/50">
-    <div class="bg-white p-6 rounded-lg w-full max-w-md">
-      <h2 class="text-xl font-bold mb-4">เพิ่มการบ้าน</h2>
-
-      <input id="title" placeholder="ชื่อวิชา" class="input" />
-      <textarea id="detail" placeholder="รายละเอียด" class="input"></textarea>
-
-      <label class="block text-sm mt-2">วันและเวลาส่ง</label>
-      <input id="due" type="datetime-local" class="input" />
-
-      <div class="flex justify-end gap-2 mt-4">
-        <button onclick="closeModal()" class="btn-gray">ยกเลิก</button>
-        <button onclick="saveHomework()" class="btn-blue">บันทึก</button>
-      </div>
+    <div class="actions">
+      <button onclick="saveTask()">บันทึก</button>
+      <button onclick="closeForm()">ยกเลิก</button>
     </div>
   </div>
+</div>
 
-  <script src="app.js"></script>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
-    }
-  </script>
+<script src="app.js"></script>
 </body>
 </html>

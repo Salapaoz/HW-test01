@@ -7,8 +7,9 @@ let data = JSON.parse(localStorage.getItem("hw") || "[]");
 const modal = document.getElementById("modal");
 const addBtn = document.getElementById("addBtn");
 const cancelBtn = document.querySelector(".cancel");
+const list = document.getElementById("list");
 
-modal.classList.add("hidden"); // บังคับซ่อนตอนโหลด
+modal.classList.add("hidden");
 
 addBtn.addEventListener("click", () => {
   modal.classList.remove("hidden");
@@ -18,7 +19,7 @@ cancelBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
 });
 
-document.querySelector(".save").onclick = () => {
+document.querySelector(".save").addEventListener("click", () => {
   data.push({
     id: Date.now(),
     assigned: assigned.value,
@@ -29,10 +30,11 @@ document.querySelector(".save").onclick = () => {
     teacher: teacher.value,
     done: false
   });
+
   localStorage.setItem("hw", JSON.stringify(data));
   modal.classList.add("hidden");
   render();
-};
+});
 
 function render() {
   list.innerHTML = "";

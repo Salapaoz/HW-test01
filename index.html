@@ -1,50 +1,50 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>การบ้านของฉัน</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6c8cff">
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
+<header class="topbar">
   <h1>📚 การบ้านของฉัน</h1>
   <button id="addBtn">➕ เพิ่มการบ้าน</button>
 </header>
 
+<section class="summary">
+  งานที่ค้าง: <span id="pendingCount">0</span> งาน
+</section>
+
 <main id="list"></main>
 
-<!-- Modal -->
+<!-- MODAL -->
 <div id="modal" class="modal hidden">
   <div class="modal-card">
     <h2>➕ เพิ่มการบ้าน</h2>
 
-    <label>📥 วันที่ได้รับมอบหมาย</label>
+    <label>วันที่ได้รับมอบหมาย</label>
     <input type="date" id="assigned">
 
-    <label>⏰ วันที่กำหนดส่ง</label>
+    <label>วันที่กำหนดส่ง</label>
     <input type="date" id="due">
 
-    <label>📘 รายวิชา</label>
+    <label>รายวิชา</label>
     <input type="text" id="subject">
 
-    <label>📝 ชื่องาน</label>
+    <label>ชื่องาน</label>
     <input type="text" id="title">
 
-    <label>📄 รายละเอียดงาน</label>
+    <label>รายละเอียดงาน</label>
     <textarea id="detail"></textarea>
 
-    <label>👩‍🏫 ครูผู้สอน</label>
+    <label>ครูผู้สอน</label>
     <input type="text" id="teacher">
 
     <div class="actions">
-      <button class="save" type="button">บันทึก</button>
-      <button class="cancel" type="button">ยกเลิก</button>
+      <button id="saveBtn">บันทึก</button>
+      <button id="cancelBtn">ยกเลิก</button>
     </div>
   </div>
 </div>
@@ -52,3 +52,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+

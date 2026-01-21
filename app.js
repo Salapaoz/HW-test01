@@ -1,68 +1,58 @@
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
+const modal = document.getElementById("modal");
+const addBtn = document.getElementById("addBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+const saveBtn = document.getElementById("saveBtn");
+const list = document.getElementById("list");
+const pendingCount = document.getElementById("pendingCount");
+
+const assigned = document.getElementById("assigned");
+const due = document.getElementById("due");
+const subject = document.getElementById("subject");
+const title = document.getElementById("title");
+const detail = document.getElementById("detail");
+const teacher = document.getElementById("teacher");
 
 let data = JSON.parse(localStorage.getItem("hw") || "[]");
 
-const modal = document.getElementById("modal");
-const addBtn = document.getElementById("addBtn");
-const cancelBtn = document.querySelector(".cancel");
-const list = document.getElementById("list");
-
+/* ป้องกัน modal เด้ง */
 modal.classList.add("hidden");
 
-addBtn.addEventListener("click", () => {
-  modal.classList.remove("hidden");
-});
+/* เปิด modal */
+addBtn.onclick = () => modal.classList.remove("hidden");
 
-cancelBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-});
+/* ปิด modal */
+cancelBtn.onclick = () => modal.classList.add("hidden");
 
-document.querySelector(".save").addEventListener("click", () => {
+/* บันทึก */
+saveBtn.onclick = () => {
   data.push({
     id: Date.now(),
-    assigned: assigned.value,
-    due: due.value,
     subject: subject.value,
     title: title.value,
-    detail: detail.value,
-    teacher: teacher.value,
-    done: false
+    due: due.value
   });
 
   localStorage.setItem("hw", JSON.stringify(data));
   modal.classList.add("hidden");
   render();
-});
+};
 
+/* render */
 function render() {
   list.innerHTML = "";
-  const now = new Date();
 
-  data.forEach(h => {
-    const d = new Date(h.due);
-    const diff = Math.ceil((d - now) / 86400000);
-
-    let cls = "";
-    if (!h.done && diff <= 3) cls = "soon";
-    if (!h.done && diff <= 1) cls = "today";
-
-    list.innerHTML += `
-      <div class="card ${cls}">
-        <h3>${h.subject} — ${h.title}</h3>
-        <small>📅 ส่ง: ${h.due} (${diff} วัน)</small>
-        <p>${h.detail}</p>
-        <button onclick="toggle(${h.id})">✔ ส่งแล้ว</button>
-      </div>`;
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <b>${item.subject}</b><br>
+      ${item.title}<br>
+      ส่ง: ${item.due}
+    `;
+    list.appendChild(div);
   });
-}
 
-function toggle(id) {
-  const h = data.find(x => x.id === id);
-  h.done = !h.done;
-  localStorage.setItem("hw", JSON.stringify(data));
-  render();
+  pendingCount.textContent = data.length;
 }
 
 render();

@@ -17,7 +17,6 @@ addBtn.addEventListener("click", () => {
 cancelBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
 });
-document.querySelector(".cancel").onclick = () => modal.classList.add("hidden");
 
 document.querySelector(".save").onclick = () => {
   data.push({

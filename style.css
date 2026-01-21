@@ -1,162 +1,99 @@
-/* ===== RESET ===== */
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  background: #f4f6fb;
-  color: #222;
+  background: #9fa0a4;
 }
 
-/* ===== HEADER ===== */
-header {
-  background: #4f6bed;
+/* TOPBAR */
+.topbar {
+  background: #2f4598;
   color: #fff;
-  padding: 16px 20px;
+  padding: 12px 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-header h1 {
-  font-size: 20px;
-  margin: 0;
-  display: flex;
   align-items: center;
-  gap: 8px;
 }
 
-header button {
-  background: #fff;
-  color: #4f6bed;
+.topbar button {
+  background: #e0e0e0;
   border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-header button:hover {
-  background: #eef1ff;
+/* SUMMARY */
+.summary {
+  padding: 12px 20px;
+  font-weight: bold;
 }
 
-/* ===== LIST ===== */
+/* LIST */
 #list {
-  max-width: 720px;
-  margin: 20px auto;
-  padding: 0 14px;
+  padding: 10px 20px;
 }
 
 .card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
-  border-left: 6px solid #4f6bed;
+  background: #bdbdbd;
+  border-left: 6px solid red;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
 }
 
-.card.soon { border-left-color: #ff9800; }
-.card.today { border-left-color: #f44336; }
-
-.card h3 {
-  margin: 0 0 6px;
-}
-
-.card small {
-  color: #666;
-}
-
-/* ===== ACTION BUTTONS ===== */
-.actions {
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
-.actions button {
-  flex: 1;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-
-.done {
-  background: #4caf50;
-  color: #fff;
-}
-
-.del {
-  background: #f44336;
-  color: #fff;
-}
-
-/* ===== MODAL ===== */
 .hidden {
   display: none;
 }
 
-#modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
 .modal-card {
   background: #fff;
-  width: 90%;
-  max-width: 420px;
-  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.2);
-}
-
-.modal-card h2 {
-  margin-top: 0;
-  text-align: center;
-}
-
-/* ===== FORM ===== */
-.modal-card label {
-  font-size: 14px;
-  margin-top: 12px;
-  display: block;
+  width: 340px;
+  border-radius: 16px;
 }
 
 .modal-card input,
 .modal-card textarea {
   width: 100%;
-  padding: 10px 12px;
-  margin-top: 6px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+  margin-bottom: 10px;
+  padding: 8px;
 }
 
-.modal-card textarea {
-  resize: none;
-  height: 80px;
+.actions {
+  display: flex;
+  gap: 10px;
 }
 
-/* ===== MODAL BUTTONS ===== */
-.modal-card .actions {
-  margin-top: 18px;
+.actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.save {
+#saveBtn {
   background: #4f6bed;
-  color: #fff;
-  font-weight: 600;
+  color: white;
 }
 
-.cancel {
-  background: #e0e0e0;
+#cancelBtn {
+  background: #ddd;
 }
+
+
 

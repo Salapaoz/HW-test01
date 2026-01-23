@@ -183,3 +183,25 @@ body {
 #cancelBtn::before {
   content: "❌ ";
 }
+
+.del-btn {
+  background: #ffe5e5;
+  color: #c0392b;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.del-btn:hover {
+  background: #ffcccc;
+}
+
+.done-btn {
+  background: #e6f4ff;
+  color: #1e88e5;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}

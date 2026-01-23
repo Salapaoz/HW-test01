@@ -1,8 +1,8 @@
+let data = JSON.parse(localStorage.getItem("hw") || "[]");
+
+const list = document.getElementById("list");
 const modal = document.getElementById("modal");
 const addBtn = document.getElementById("addBtn");
-const cancelBtn = document.getElementById("cancelBtn");
-const saveBtn = document.getElementById("saveBtn");
-const list = document.getElementById("list");
 const pendingCount = document.getElementById("pendingCount");
 
 const assigned = document.getElementById("assigned");
@@ -12,86 +12,142 @@ const title = document.getElementById("title");
 const detail = document.getElementById("detail");
 const teacher = document.getElementById("teacher");
 
-let data = JSON.parse(localStorage.getItem("hw") || "[]");
+let editingId = null;
 
-/* ป้องกัน modal เด้ง */
-modal.classList.add("hidden");
+/* ---------- Modal ---------- */
+addBtn.onclick = () => {
+  editingId = null;
+  clearForm();
+  modal.classList.remove("hidden");
+};
 
-/* เปิด modal */
-addBtn.onclick = () => modal.classList.remove("hidden");
+document.querySelector(".cancel").onclick = () => {
+  modal.classList.add("hidden");
+};
 
-/* ปิด modal */
-cancelBtn.onclick = () => modal.classList.add("hidden");
+document.querySelector(".save").onclick = () => {
+  if (!due.value || !title.value) {
+    alert("กรอกข้อมูลให้ครบ");
+    return;
+  }
 
-/* บันทึก */
-saveBtn.onclick = () => {
-  data.push({
-    id: Date.now(),
-    subject: subject.value,
-    title: title.value,
-    due: due.value
-  });
+  if (editingId) {
+    const h = data.find(x => x.id === editingId);
+    Object.assign(h, getFormData());
+  } else {
+    data.push({
+      id: Date.now(),
+      done: false,
+      lastNotify: "",
+      ...getFormData()
+    });
+  }
 
-  localStorage.setItem("hw", JSON.stringify(data));
+  save();
   modal.classList.add("hidden");
   render();
 };
 
-/* render */
+function getFormData() {
+  return {
+    assigned: assigned.value,
+    due: due.value,
+    subject: subject.value,
+    title: title.value,
+    detail: detail.value,
+    teacher: teacher.value
+  };
+}
+
+function clearForm() {
+  assigned.value = due.value = subject.value =
+  title.value = detail.value = teacher.value = "";
+}
+
+/* ---------- Render ---------- */
 function render() {
   list.innerHTML = "";
+  let pending = 0;
+  const today = new Date().toDateString();
 
-  data.forEach(item => {
-    const div = document.createElement("div");
-    div.className = "card";
+  data.forEach(h => {
+    const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
 
-    div.innerHTML = `
-      <div class="card-body">
-        <b>📘 ${item.subject}</b><br>
-        📝 ${item.title}<br>
-        ⏰ ส่ง: ${item.due}
-      </div>
+    if (!h.done) pending++;
 
-      <div class="card-actions">
-        <button 
-          class="done-btn"
-          data-id="${item.id}">
-          ✅ ส่งแล้ว
-        </button>
+    // แจ้งเตือน (วันละครั้ง)
+    if (!h.done && diff <= 3 && h.lastNotify !== today) {
+      notify(h);
+      h.lastNotify = today;
+      save();
+    }
 
-        <button 
-          class="del-btn"
-          data-id="${item.id}">
-          🗑 ลบ
-        </button>
+    const card = document.createElement("div");
+    card.className = `card ${h.done ? "done" : "pending"}`;
+
+    card.innerHTML = `
+      <h3>${h.subject} - ${h.title}</h3>
+      <small>👩‍🏫 ${h.teacher || "-"}</small><br>
+      <small>📥 ${h.assigned || "-"} | ⏰ ${h.due} (${diff} วัน)</small>
+      <p>${h.detail || ""}</p>
+      <div class="actions">
+        <button class="done">✔</button>
+        <button class="del">🗑</button>
       </div>
     `;
 
-    list.appendChild(div);
+    // คลิกดู / แก้ไข
+    card.onclick = () => openEdit(h.id);
+
+    card.querySelector(".done").onclick = e => {
+      e.stopPropagation();
+      h.done = !h.done;
+      save();
+      render();
+    };
+
+    card.querySelector(".del").onclick = e => {
+      e.stopPropagation();
+      data = data.filter(x => x.id !== h.id);
+      save();
+      render();
+    };
+
+    list.appendChild(card);
   });
 
-  pendingCount.textContent = data.length;
+  pendingCount.textContent = pending;
+}
+
+function openEdit(id) {
+  const h = data.find(x => x.id === id);
+  editingId = id;
+
+  assigned.value = h.assigned;
+  due.value = h.due;
+  subject.value = h.subject;
+  title.value = h.title;
+  detail.value = h.detail;
+  teacher.value = h.teacher;
+
+  modal.classList.remove("hidden");
+}
+
+function save() {
+  localStorage.setItem("hw", JSON.stringify(data));
+}
+
+/* ---------- Notification ---------- */
+function notify(h) {
+  if (!("Notification" in window)) return;
+
+  if (Notification.permission === "granted") {
+    new Notification("📌 งานใกล้ครบกำหนด", {
+      body: `${h.title} เหลือไม่เกิน 3 วัน`
+    });
+  } else {
+    Notification.requestPermission();
+  }
 }
 
 render();
-
-list.addEventListener("click", (e) => {
-  const id = Number(e.target.dataset.id);
-  if (!id) return;
-
-  // กดส่งแล้ว
-  if (e.target.classList.contains("done-btn")) {
-    const hw = data.find(h => h.id === id);
-    if (!hw) return;
-    hw.done = !hw.done;
-  }
-
-  // กดลบ
-  if (e.target.classList.contains("del-btn")) {
-    if (!confirm("🗑 ต้องการลบการบ้านนี้ใช่ไหม?")) return;
-    data = data.filter(h => h.id !== id);
-  }
-
-  localStorage.setItem("hw", JSON.stringify(data));
-  render();
-});

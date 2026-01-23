@@ -1,207 +1,150 @@
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: 'Itim', sans-serif;
 }
 
 body {
   margin: 0;
-  background: #f2f4f8;
+  background: #f6f8ff;
+  color: #333;
 }
 
-/* ===== TOPBAR ===== */
 .topbar {
-  background: #2f4598;
-  color: #fff;
-  padding: 14px 24px;
+  background: #6c8cff;
+  color: white;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.topbar h1 {
-  margin: 0;
-  font-size: 20px;
-}
-
 .topbar button {
-  background: #ffffff;
-  color: #2f4598;
+  background: white;
+  color: #6c8cff;
   border: none;
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
   cursor: pointer;
+  font-size: 1rem;
 }
 
-/* ===== SUMMARY ===== */
-.summary {
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-/* ===== LIST ===== */
-#list {
-  padding: 0 24px 24px;
-  display: grid;
-  gap: 14px;
+.container {
+  padding: 1rem;
+  max-width: 900px;
+  margin: auto;
 }
 
 .card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.08);
-  border-left: 6px solid #ff4d4f;
+  background: rgb(255, 255, 255);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-.card b {
-  font-size: 16px;
+.card.soon { border-left: 6px solid orange; }
+.card.today { border-left: 6px solid red; }
+
+.card h3 {
+  margin: 0 0 0.3rem;
 }
 
-/* ===== MODAL ===== */
+.card small {
+  color: #666;
+}
+
+.actions {
+  margin-top: 0.5rem;
+}
+
+.actions button {
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.done { background: #4ade80; }
+.del { background: #f87171; }
+
+/* Modal */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.45);
+  background: rgba(0,0,0,0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 .modal-card {
-  background: #fff;
-  width: 360px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 20px;
+  background: white;
+  padding: 1.2rem;
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
+  width: 90%;
+  max-width: 400px;
 }
 
 .modal-card h2 {
   margin-top: 0;
-  text-align: center;
 }
 
-/* INPUT */
 .modal-card label {
-  font-size: 13px;
-  font-weight: 600;
   display: block;
-  margin-top: 10px;
+  margin-top: 0.6rem;
 }
 
 .modal-card input,
 .modal-card textarea {
   width: 100%;
-  padding: 10px 12px;
-  margin-top: 4px;
-  border-radius: 10px;
+  padding: 0.4rem;
+  margin-top: 0.2rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 14px;
 }
 
 .modal-card textarea {
   resize: none;
-  height: 80px;
+  height: 60px;
 }
 
-/* ===== ACTION BUTTONS ===== */
-.actions {
+.modal-card .actions {
   display: flex;
-  gap: 10px;
-  margin-top: 16px;
+  justify-content: space-between;
+  margin-top: 1rem;
 }
 
-.actions button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  font-size: 15px;
-  font-weight: 600;
+.save {
+  background: #6c8cff;
+  color: rgb(0, 0, 0);
+}
+
+.cancel {
+  background: #ddd;
+}
+
+.summary {
+  text-align: center;
+  padding: 0.5rem;
+  background: #eef2ff;
+  font-size: 1.1rem;
+}
+
+/* งานเสร็จ */
+.card.done {
+  border-left: 6px solid #22c55e;
+  background: #f0fdf4;
+}
+
+/* งานค้าง */
+.card.pending {
+  border-left: 6px solid #ef4444;
+}
+
+/* คลิกดูรายละเอียด */
+.card {
   cursor: pointer;
 }
 
-#saveBtn {
-  background: #4f6bed;
-  color: white;
-}
-
-#cancelBtn {
-  background: #e0e0e0;
-}
-
-/* ========= EMOJI UI ========= */
-
-/* หัวเว็บ */
-.topbar h1::before {
-  content: "📚 ";
-}
-
-/* สรุปงานค้าง */
-.summary::before {
-  content: "⏳ ";
-}
-
-/* การ์ดงาน */
-.card::before {
-  content: "📝 ";
-  font-size: 20px;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.card::after {
-  content: "🔥";
-  position: absolute;
-  top: 12px;
-  right: 14px;
-}
-
-/* modal */
-.modal-card h2::before {
-  content: "➕ ";
-}
-
-/* label */
-.modal-card label::before {
-  content: "📌 ";
-}
-
-/* ปุ่ม */
-#saveBtn::before {
-  content: "💾 ";
-}
-
-#cancelBtn::before {
-  content: "❌ ";
-}
-
-.del-btn {
-  background: #ffe5e5;
-  color: #c0392b;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.del-btn:hover {
-  background: #ffcccc;
-}
-
-.done-btn {
-  background: #e6f4ff;
-  color: #1e88e5;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}

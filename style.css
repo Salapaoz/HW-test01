@@ -171,3 +171,7 @@ summary {
   cursor: pointer;
 }
 
+#pendingCount:empty,
+#pendingCount.zero {
+  background: #22c55e;
+}

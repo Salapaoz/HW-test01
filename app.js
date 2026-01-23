@@ -76,3 +76,24 @@ function render() {
 }
 
 render();
+
+list.addEventListener("click", (e) => {
+  const id = Number(e.target.dataset.id);
+  if (!id) return;
+
+  // กดส่งแล้ว
+  if (e.target.classList.contains("done-btn")) {
+    const hw = data.find(h => h.id === id);
+    if (!hw) return;
+    hw.done = !hw.done;
+  }
+
+  // กดลบ
+  if (e.target.classList.contains("del-btn")) {
+    if (!confirm("🗑 ต้องการลบการบ้านนี้ใช่ไหม?")) return;
+    data = data.filter(h => h.id !== id);
+  }
+
+  localStorage.setItem("hw", JSON.stringify(data));
+  render();
+});

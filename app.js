@@ -117,6 +117,8 @@ function render() {
   });
 
   pendingCount.textContent = pending;
+  pendingCount.classList.toggle("zero", pending === 0);
+
 }
 
 function openEdit(id) {

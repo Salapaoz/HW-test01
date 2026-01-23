@@ -39,6 +39,26 @@ saveBtn.onclick = () => {
 
 /* render */
 function render() {
+  list.innerHTML += `
+  <div class="card ${cls}">
+    <h3>📘 ${h.subject} — ${h.title}</h3>
+    <small>👩‍🏫 ${h.teacher}</small><br>
+    <small>📅 ส่ง: ${h.due} (${diff} วัน)</small>
+
+    <p>${h.detail || ""}</p>
+
+    <div class="actions">
+      <button class="done-btn" data-id="${h.id}">
+        ${h.done ? "↩ ยกเลิกส่ง" : "✔ ส่งแล้ว"}
+      </button>
+
+      <button class="del-btn" data-id="${h.id}">
+        🗑 ลบ
+      </button>
+    </div>
+  </div>
+`;
+
   list.innerHTML = "";
 
   data.forEach(item => {

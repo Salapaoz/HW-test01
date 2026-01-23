@@ -125,11 +125,34 @@ body {
   background: #ddd;
 }
 
-.summary {
-  text-align: center;
-  padding: 0.5rem;
-  background: #eef2ff;
+summary {
+  max-width: 420px;
+  margin: 12px auto;
+  padding: 12px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: linear-gradient(135deg, #ffe4e6, #eef2ff);
+  border-radius: 16px;
+
   font-size: 1.1rem;
+  font-weight: 500;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+/* ตัวเลขงานค้าง */
+#pendingCount {
+  background: #ef4444;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  min-width: 42px;
+  text-align: center;
 }
 
 /* งานเสร็จ */

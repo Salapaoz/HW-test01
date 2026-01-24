@@ -1,7 +1,7 @@
 {
   "name": "การบ้าน",
   "short_name": "การบ้าน",
-  "start_url": "/HW-test01/",
+  "start_url": "/HW-test01/index.html",
   "scope": "/HW-test01/",
   "display": "standalone",
   "background_color": "#f1f3f6",

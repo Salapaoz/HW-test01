@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-
+  alert("JS LOADED");
   /* ---------- State ---------- */
   let data = JSON.parse(localStorage.getItem("hw") || "[]");
   let editingId = null;

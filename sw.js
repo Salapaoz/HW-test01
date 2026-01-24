@@ -1,4 +1,4 @@
-const CACHE_NAME = "hw-test01-v2";
+const CACHE_NAME = "hw-v1";
 const ASSETS = [
   "/HW-test01/",
   "/HW-test01/index.html",
@@ -9,31 +9,13 @@ const ASSETS = [
   "/HW-test01/icons/icon-512.png"
 ];
 
-// ติดตั้ง + cache
 self.addEventListener("install", event => {
-  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
+  self.skipWaiting();
 });
 
-// ลบ cache เก่า
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-    )
-  );
-  self.clients.claim();
-});
-
-// fetch
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(res => {
@@ -41,3 +23,4 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+

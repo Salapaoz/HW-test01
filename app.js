@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* ---------- State ---------- */
   let data = JSON.parse(localStorage.getItem("hw") || "[]");
+  let editingId = null;
 
+  /* ---------- Elements ---------- */
   const list = document.getElementById("list");
   const modal = document.getElementById("modal");
   const addBtn = document.getElementById("addBtn");
@@ -14,22 +17,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const detail = document.getElementById("detail");
   const teacher = document.getElementById("teacher");
 
-  let editingId = null;
+  const saveBtn = document.querySelector(".save");
+  const cancelBtn = document.querySelector(".cancel");
+
+  /* ---------- Helpers ---------- */
+  function save() {
+    localStorage.setItem("hw", JSON.stringify(data));
+  }
+
+  function clearForm() {
+    assigned.value = "";
+    due.value = "";
+    subject.value = "";
+    title.value = "";
+    detail.value = "";
+    teacher.value = "";
+  }
+
+  function getFormData() {
+    return {
+      assigned: assigned.value,
+      due: due.value,
+      subject: subject.value,
+      title: title.value,
+      detail: detail.value,
+      teacher: teacher.value
+    };
+  }
 
   /* ---------- Modal ---------- */
-  addBtn.onclick = () => {
+  addBtn.addEventListener("click", () => {
     editingId = null;
     clearForm();
     modal.classList.remove("hidden");
-  };
+  });
 
-  document.querySelector(".cancel").onclick = () => {
+  cancelBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
-  };
+  });
 
-  document.querySelector(".save").onclick = () => {
+  saveBtn.addEventListener("click", () => {
     if (!due.value || !title.value) {
-      alert("กรอกข้อมูลให้ครบ");
+      alert("กรอกวันที่ส่งและชื่องานก่อนนะ");
       return;
     }
 
@@ -48,37 +77,22 @@ document.addEventListener("DOMContentLoaded", () => {
     save();
     modal.classList.add("hidden");
     render();
-  };
-
-  function getFormData() {
-    return {
-      assigned: assigned.value,
-      due: due.value,
-      subject: subject.value,
-      title: title.value,
-      detail: detail.value,
-      teacher: teacher.value
-    };
-  }
-
-  function clearForm() {
-    assigned.value = due.value = subject.value =
-    title.value = detail.value = teacher.value = "";
-  }
+  });
 
   /* ---------- Render ---------- */
   function render() {
     list.innerHTML = "";
     let pending = 0;
-    const today = new Date().toDateString();
+    const todayKey = new Date().toDateString();
 
     data.forEach(h => {
       const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
       if (!h.done) pending++;
 
-      if (!h.done && diff <= 3 && h.lastNotify !== today) {
+      // notify when <= 3 days
+      if (!h.done && diff <= 3 && h.lastNotify !== todayKey) {
         notify(h);
-        h.lastNotify = today;
+        h.lastNotify = todayKey;
         save();
       }
 
@@ -86,31 +100,34 @@ document.addEventListener("DOMContentLoaded", () => {
       card.className = `card ${h.done ? "done" : "pending"}`;
 
       card.innerHTML = `
-        <h3>${h.subject} - ${h.title}</h3>
+        <h3>${h.subject || "-"} — ${h.title}</h3>
         <small>👩‍🏫 ${h.teacher || "-"}</small><br>
         <small>📥 ${h.assigned || "-"} | ⏰ ${h.due} (${diff} วัน)</small>
         <p>${h.detail || ""}</p>
         <div class="actions">
-          <button class="done">✔</button>
-          <button class="del">🗑</button>
+          <button type="button" class="doneBtn">✔</button>
+          <button type="button" class="delBtn">🗑</button>
         </div>
       `;
 
-      card.onclick = () => openEdit(h.id);
+      // open edit
+      card.addEventListener("click", () => openEdit(h.id));
 
-      card.querySelector(".done").onclick = e => {
+      // toggle done
+      card.querySelector(".doneBtn").addEventListener("click", (e) => {
         e.stopPropagation();
         h.done = !h.done;
         save();
         render();
-      };
+      });
 
-      card.querySelector(".del").onclick = e => {
+      // delete
+      card.querySelector(".delBtn").addEventListener("click", (e) => {
         e.stopPropagation();
         data = data.filter(x => x.id !== h.id);
         save();
         render();
-      };
+      });
 
       list.appendChild(card);
     });
@@ -123,18 +140,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const h = data.find(x => x.id === id);
     editingId = id;
 
-    assigned.value = h.assigned;
-    due.value = h.due;
-    subject.value = h.subject;
-    title.value = h.title;
-    detail.value = h.detail;
-    teacher.value = h.teacher;
+    assigned.value = h.assigned || "";
+    due.value = h.due || "";
+    subject.value = h.subject || "";
+    title.value = h.title || "";
+    detail.value = h.detail || "";
+    teacher.value = h.teacher || "";
 
     modal.classList.remove("hidden");
-  }
-
-  function save() {
-    localStorage.setItem("hw", JSON.stringify(data));
   }
 
   function notify(h) {
@@ -144,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       new Notification("📌 งานใกล้ครบกำหนด", {
         body: `${h.title} เหลือไม่เกิน 3 วัน`
       });
-    } else {
+    } else if (Notification.permission !== "denied") {
       Notification.requestPermission();
     }
   }
@@ -152,3 +165,5 @@ document.addEventListener("DOMContentLoaded", () => {
   render();
 });
 
+  render();
+});

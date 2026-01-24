@@ -56,11 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  saveBtn.addEventListener("click", () => {
+  saveBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
     if (!due.value || !title.value) {
       alert("กรอกวันที่ส่งและชื่องานก่อนนะ");
       return;
-    }
+  }
 
     if (editingId) {
       const h = data.find(x => x.id === editingId);

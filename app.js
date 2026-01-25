@@ -46,13 +46,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ---------- Modal ---------- */
-  addBtn.addEventListener("click", () => {
+  addBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
     editingId = null;
     clearForm();
     modal.classList.remove("hidden");
   });
 
-  cancelBtn.addEventListener("click", () => {
+  cancelBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
     modal.classList.add("hidden");
   });
 

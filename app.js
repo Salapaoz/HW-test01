@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn = document.querySelector(".save");
   const cancelBtn = document.querySelector(".cancel");
 
-  /* ---------- Helpers ---------- */
+  /* ---------- Storage ---------- */
   function save() {
     localStorage.setItem("hw", JSON.stringify(data));
   }
@@ -45,33 +45,46 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  /* ---------- Modal Controls ---------- */
-  addBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  /* ---------- Toast ---------- */
+  function showToast(msg) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add("show"));
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  }
+
+  /* ---------- Modal ---------- */
+  addBtn.addEventListener("click", () => {
     editingId = null;
     clearForm();
     modal.classList.remove("hidden");
   });
 
-  cancelBtn.addEventListener("click", (e) => {
+  cancelBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.classList.add("hidden");
+  });
+
+  /* ⭐ แก้บั๊กมือถือ: click + touch */
+  saveBtn.addEventListener("click", handleSave);
+  saveBtn.addEventListener("touchend", handleSave, { passive: false });
+
+  function handleSave(e) {
     e.preventDefault();
     e.stopPropagation();
-    modal.classList.add("hidden");
-  });
-
-  // ปิด modal เมื่อกดพื้นหลัง
-  modal.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-
-  // ⭐⭐ จุดแก้บั๊กมือถือที่สำคัญที่สุด
-  saveBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation(); // กัน event ไหลบนมือถือ
 
     if (!due.value || !title.value) {
-      alert("กรอกวันที่ส่งและชื่องานก่อนนะ");
+      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
       return;
     }
 
@@ -91,7 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
     clearForm();
     render();
-  });
+    showToast("✅ บันทึกการบ้านเรียบร้อยแล้ว");
+  }
+
+  /* ---------- Notification (⬅ กลับมาแล้ว) ---------- */
+  function notify(h) {
+    if (!("Notification" in window)) return;
+
+    if (Notification.permission === "granted") {
+      new Notification("📌 งานใกล้ครบกำหนด", {
+        body: `${h.title} เหลือไม่เกิน 3 วัน`
+      });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission();
+    }
+  }
 
   /* ---------- Render ---------- */
   function render() {
@@ -103,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
       if (!h.done) pending++;
 
-      // แจ้งเตือนเมื่อเหลือ ≤ 3 วัน
+      // แจ้งเตือนก่อนครบกำหนด 3 วัน
       if (!h.done && diff <= 3 && h.lastNotify !== todayKey) {
         notify(h);
         h.lastNotify = todayKey;
@@ -116,18 +143,14 @@ document.addEventListener("DOMContentLoaded", () => {
       card.innerHTML = `
         <h3>${h.subject || "-"} — ${h.title}</h3>
         <small>👩‍🏫 ${h.teacher || "-"}</small><br>
-        <small>📥 ${h.assigned || "-"} | ⏰ ${h.due} (${diff} วัน)</small>
+        <small>⏰ ${h.due} (${diff} วัน)</small>
         <p>${h.detail || ""}</p>
         <div class="actions">
-          <button type="button" class="doneBtn">✔</button>
-          <button type="button" class="delBtn">🗑</button>
+          <button class="doneBtn" type="button">✔</button>
+          <button class="delBtn" type="button">🗑</button>
         </div>
       `;
 
-      // เปิดแก้ไข
-      card.addEventListener("click", () => openEdit(h.id));
-
-      // ทำเสร็จ / ยกเลิกเสร็จ
       card.querySelector(".doneBtn").addEventListener("click", (e) => {
         e.stopPropagation();
         h.done = !h.done;
@@ -135,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
         render();
       });
 
-      // ลบงาน
       card.querySelector(".delBtn").addEventListener("click", (e) => {
         e.stopPropagation();
         data = data.filter(x => x.id !== h.id);
@@ -147,37 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     pendingCount.textContent = pending;
-    pendingCount.classList.toggle("zero", pending === 0);
-  }
-
-  /* ---------- Edit ---------- */
-  function openEdit(id) {
-    const h = data.find(x => x.id === id);
-    if (!h) return;
-
-    editingId = id;
-
-    assigned.value = h.assigned || "";
-    due.value = h.due || "";
-    subject.value = h.subject || "";
-    title.value = h.title || "";
-    detail.value = h.detail || "";
-    teacher.value = h.teacher || "";
-
-    modal.classList.remove("hidden");
-  }
-
-  /* ---------- Notification ---------- */
-  function notify(h) {
-    if (!("Notification" in window)) return;
-
-    if (Notification.permission === "granted") {
-      new Notification("📌 งานใกล้ครบกำหนด", {
-        body: `${h.title} เหลือไม่เกิน 3 วัน`
-      });
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission();
-    }
   }
 
   render();

@@ -1,4 +1,4 @@
-const CACHE_NAME = "hw-v2";
+const CACHE_NAME = "hw-v3";
 const FILES_TO_CACHE = [
   "/HW-test01/",
   "/HW-test01/index.html",

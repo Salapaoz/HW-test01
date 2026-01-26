@@ -80,30 +80,34 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Save ---------- */
   saveBtn.addEventListener("pointerup", handleSave);
 
-  function handleSave(e) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
+ function handleSave(e) {
+  e.preventDefault();
 
-    if (!due.value || !title.value) {
-      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
-      return;
-    }
-
-    data.push({
-      id: Date.now(),
-      done: false,
-      lastNotify: "",
-      ...getFormData()
-    });
-
-    save();
-    render();
-
-    modal.classList.add("hidden");
-    clearForm();
-
-    showToast("✅ บันทึกการบ้านแล้ว");
+  if (!due.value || !title.value) {
+    alert("กรอกวันที่ส่งและชื่องานก่อนนะ");
+    return;
   }
+
+  data.push({
+    id: Date.now(),
+    done: false,
+    lastNotify: "",
+    assigned: assigned.value,
+    due: due.value,
+    subject: subject.value,
+    title: title.value,
+    detail: detail.value,
+    teacher: teacher.value
+  });
+
+  localStorage.setItem("hw", JSON.stringify(data));
+
+  modal.classList.add("hidden");
+  clearForm();
+  render();
+
+  alert("บันทึกการบ้านแล้ว");
+}
 
   /* ---------- Notification ---------- */
   function notify(h) {

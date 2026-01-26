@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  alert("JS LOADED");
+
   /* ---------- State ---------- */
   let data = JSON.parse(localStorage.getItem("hw") || "[]");
   let editingId = null;
@@ -45,8 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  /* ---------- Modal ---------- */
+  /* ---------- Modal Controls ---------- */
   addBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
     editingId = null;
     clearForm();
@@ -54,21 +55,29 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   cancelBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     e.stopPropagation();
     modal.classList.add("hidden");
   });
 
+  // ปิด modal เมื่อกดพื้นหลัง
+  modal.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  // ⭐⭐ จุดแก้บั๊กมือถือที่สำคัญที่สุด
   saveBtn.addEventListener("click", (e) => {
     e.preventDefault();
+    e.stopPropagation(); // กัน event ไหลบนมือถือ
 
     if (!due.value || !title.value) {
       alert("กรอกวันที่ส่งและชื่องานก่อนนะ");
       return;
-  }
+    }
 
     if (editingId) {
       const h = data.find(x => x.id === editingId);
-      Object.assign(h, getFormData());
+      if (h) Object.assign(h, getFormData());
     } else {
       data.push({
         id: Date.now(),
@@ -80,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     save();
     modal.classList.add("hidden");
+    clearForm();
     render();
   });
 
@@ -93,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
       if (!h.done) pending++;
 
-      // notify when <= 3 days
+      // แจ้งเตือนเมื่อเหลือ ≤ 3 วัน
       if (!h.done && diff <= 3 && h.lastNotify !== todayKey) {
         notify(h);
         h.lastNotify = todayKey;
@@ -114,10 +124,10 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      // open edit
+      // เปิดแก้ไข
       card.addEventListener("click", () => openEdit(h.id));
 
-      // toggle done
+      // ทำเสร็จ / ยกเลิกเสร็จ
       card.querySelector(".doneBtn").addEventListener("click", (e) => {
         e.stopPropagation();
         h.done = !h.done;
@@ -125,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         render();
       });
 
-      // delete
+      // ลบงาน
       card.querySelector(".delBtn").addEventListener("click", (e) => {
         e.stopPropagation();
         data = data.filter(x => x.id !== h.id);
@@ -140,8 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
     pendingCount.classList.toggle("zero", pending === 0);
   }
 
+  /* ---------- Edit ---------- */
   function openEdit(id) {
     const h = data.find(x => x.id === id);
+    if (!h) return;
+
     editingId = id;
 
     assigned.value = h.assigned || "";
@@ -154,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.remove("hidden");
   }
 
+  /* ---------- Notification ---------- */
   function notify(h) {
     if (!("Notification" in window)) return;
 

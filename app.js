@@ -78,9 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ---------- Save ---------- */
-  saveBtn.addEventListener("click", handleSave);
-
-  function handleSave(e) {
+  saveBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -103,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearForm();
 
     showToast("✅ บันทึกการบ้านแล้ว");
-  }
+  });
 
   /* ---------- Notification ---------- */
   function notify(h) {
@@ -171,5 +169,3 @@ document.addEventListener("DOMContentLoaded", () => {
   render();
 });
 
-  render();
-});

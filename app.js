@@ -1,150 +1,132 @@
-document.addEventListener("DOMContentLoaded", () => {
+let data = JSON.parse(localStorage.getItem("hw") || "[]");
+let editingId = null;
 
-  /* ================== STATE ================== */
-  let data = JSON.parse(localStorage.getItem("hw") || "[]");
+const list = document.getElementById("list");
+const modal = document.getElementById("modal");
+const addBtn = document.getElementById("addBtn");
 
-  /* ================== ELEMENTS ================== */
-  const list = document.getElementById("list");
-  const modal = document.getElementById("modal");
-  const addBtn = document.getElementById("addBtn");
-  const pendingCount = document.getElementById("pendingCount");
+const assigned = document.getElementById("assigned");
+const due = document.getElementById("due");
+const subject = document.getElementById("subject");
+const title = document.getElementById("title");
+const detail = document.getElementById("detail");
+const teacher = document.getElementById("teacher");
 
-  const assigned = document.getElementById("assigned");
-  const due = document.getElementById("due");
-  const subject = document.getElementById("subject");
-  const title = document.getElementById("title");
-  const detail = document.getElementById("detail");
-  const teacher = document.getElementById("teacher");
+const saveBtn = document.querySelector(".save");
+const cancelBtn = document.querySelector(".cancel");
 
-  const saveBtn = document.querySelector(".save");
-  const cancelBtn = document.querySelector(".cancel");
-  const modalCard = document.querySelector(".modal-card");
+const pendingCount = document.getElementById("pendingCount");
+const pendingBox = document.getElementById("pendingBox");
+const soonBox = document.getElementById("soonBox");
 
-  /* ================== UTILS ================== */
-  function saveStorage() {
-    localStorage.setItem("hw", JSON.stringify(data));
+/* UTIL */
+function saveStorage() {
+  localStorage.setItem("hw", JSON.stringify(data));
+}
+
+function clearForm() {
+  assigned.value = "";
+  due.value = "";
+  subject.value = "";
+  title.value = "";
+  detail.value = "";
+  teacher.value = "";
+  editingId = null;
+}
+
+/* MODAL */
+addBtn.onclick = () => {
+  clearForm();
+  modal.classList.remove("hidden");
+};
+
+cancelBtn.onclick = () => modal.classList.add("hidden");
+
+modal.onclick = e => {
+  if (e.target === modal) modal.classList.add("hidden");
+};
+
+/* SAVE */
+saveBtn.onclick = () => {
+  if (!title.value || !due.value) return;
+
+  if (editingId) {
+    const i = data.findIndex(x => x.id === editingId);
+    data[i] = { ...data[i], ...getFormData() };
+  } else {
+    data.push({ id: Date.now(), done: false, ...getFormData() });
   }
 
-  function clearForm() {
-    assigned.value = "";
-    due.value = "";
-    subject.value = "";
-    title.value = "";
-    detail.value = "";
-    teacher.value = "";
-  }
+  saveStorage();
+  modal.classList.add("hidden");
+  render();
+};
 
-  function showToast(msg) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.textContent = msg;
-    document.body.appendChild(toast);
+function getFormData() {
+  return {
+    assigned: assigned.value,
+    due: due.value,
+    subject: subject.value,
+    title: title.value,
+    detail: detail.value,
+    teacher: teacher.value
+  };
+}
 
-    requestAnimationFrame(() => toast.classList.add("show"));
+/* RENDER */
+function render() {
+  list.innerHTML = "";
+  let pending = 0;
+  let soon = 0;
 
-    setTimeout(() => {
-      toast.classList.remove("show");
-      setTimeout(() => toast.remove(), 300);
-    }, 2000);
-  }
+  data.forEach(h => {
+    const diff = Math.ceil(
+      (new Date(h.due) - new Date()) / 86400000
+    );
 
-  function parseDateSafe(dateStr) {
-    if (!dateStr) return null;
-    const d = new Date(dateStr + "T00:00:00");
-    return isNaN(d.getTime()) ? null : d;
-  }
+    let status = "ค้าง";
+    let cls = "status-pending";
 
-  /* ================== MODAL ================== */
-  addBtn.addEventListener("click", () => {
-    clearForm();
-    modal.classList.remove("hidden");
-  });
-
-  cancelBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.classList.add("hidden");
-  });
-
-  modalCard.addEventListener("click", e => e.stopPropagation());
-
-  /* ================== SAVE ================== */
-  saveBtn.addEventListener("click", () => {
-    const titleVal = title.value.trim();
-    const dueVal = due.value;
-
-    if (!titleVal || !dueVal) {
-      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
-      return;
+    if (h.done) {
+      status = "เสร็จแล้ว";
+      cls = "status-done";
+    } else if (diff <= 1) {
+      status = "ใกล้ส่ง";
+      cls = "status-soon";
+      soon++;
     }
 
-    data.push({
-      id: Date.now(),
-      assigned: assigned.value,
-      due: dueVal,
-      subject: subject.value,
-      title: titleVal,
-      detail: detail.value,
-      teacher: teacher.value,
-      done: false,
-      lastNotify: ""
-    });
+    if (!h.done) pending++;
 
-    saveStorage();
-    render();
+    const item = document.createElement("div");
+    item.className = "task-item";
+    item.innerHTML = `
+      <div class="task-title">${h.title}</div>
+      <div class="task-status ${cls}">${status}</div>
+    `;
 
-    modal.classList.add("hidden");
-    clearForm();
-    showToast("✅ บันทึกการบ้านแล้ว");
+    item.onclick = () => openDetail(h.id);
+    list.appendChild(item);
   });
 
-  /* ================== RENDER ================== */
-  function render() {
-    list.innerHTML = "";
-    let pending = 0;
-    const todayKey = new Date().toDateString();
+  pendingCount.textContent = pending;
+  pendingBox.textContent = pending;
+  soonBox.textContent = soon;
+}
 
-    data.forEach(h => {
-      const dueDate = parseDateSafe(h.due);
-      const diff = dueDate
-        ? Math.ceil((dueDate - new Date()) / 86400000)
-        : "-";
+function openDetail(id) {
+  const h = data.find(x => x.id === id);
+  if (!h) return;
 
-      if (!h.done) pending++;
+  editingId = id;
+  assigned.value = h.assigned;
+  due.value = h.due;
+  subject.value = h.subject;
+  title.value = h.title;
+  detail.value = h.detail;
+  teacher.value = h.teacher;
 
-      const card = document.createElement("div");
-      card.className = `card ${h.done ? "done" : "pending"}`;
+  modal.classList.remove("hidden");
+}
 
-      card.innerHTML = `
-        <h3>${h.subject || "-"} — ${h.title}</h3>
-        <small>👩‍🏫 ${h.teacher || "-"}</small>
-        <small>⏰ ${h.due || "-"} (${diff} วัน)</small>
-        <p>${h.detail || ""}</p>
-        <div class="actions">
-          <button class="doneBtn" type="button">✔</button>
-          <button class="delBtn" type="button">🗑</button>
-        </div>
-      `;
-
-      card.querySelector(".doneBtn").onclick = () => {
-        h.done = !h.done;
-        saveStorage();
-        render();
-      };
-
-      card.querySelector(".delBtn").onclick = () => {
-        data = data.filter(x => x.id !== h.id);
-        saveStorage();
-        render();
-      };
-
-      list.appendChild(card);
-    });
-
-    pendingCount.textContent = pending;
-  }
-
-  render();
-});
+render();

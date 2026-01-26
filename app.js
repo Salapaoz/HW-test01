@@ -71,41 +71,43 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.classList.add("hidden");
+  modal.addEventListener("pointerdown", (e) => {
+  if (e.target === modal) {
+    modal.classList.add("hidden");
+  }
   });
 
-  /* ⭐ แก้บั๊กมือถือ: click + touch */
-  saveBtn.addEventListener("click", handleSave);
-  saveBtn.addEventListener("touchend", handleSave, { passive: false });
+  saveBtn.addEventListener("pointerup", handleSave);
 
   function handleSave(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  e.preventDefault();
+  e.stopImmediatePropagation();
 
-    if (!due.value || !title.value) {
-      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
-      return;
-    }
-
-    if (editingId) {
-      const h = data.find(x => x.id === editingId);
-      if (h) Object.assign(h, getFormData());
-    } else {
-      data.push({
-        id: Date.now(),
-        done: false,
-        lastNotify: "",
-        ...getFormData()
-      });
-    }
-
-    save();
-    modal.classList.add("hidden");
-    clearForm();
-    render();
-    showToast("✅ บันทึกการบ้านเรียบร้อยแล้ว");
+  if (!due.value || !title.value) {
+    showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
+    return;
   }
+
+  if (editingId) {
+    const h = data.find(x => x.id === editingId);
+    if (h) Object.assign(h, getFormData());
+  } else {
+    data.push({
+      id: Date.now(),
+      done: false,
+      lastNotify: "",
+      ...getFormData()
+    });
+  }
+
+  save();
+  render();
+
+  modal.classList.add("hidden");
+  clearForm();
+
+  showToast("✅ บันทึกการบ้านแล้ว");
+}
 
   /* ---------- Notification (⬅ กลับมาแล้ว) ---------- */
   function notify(h) {

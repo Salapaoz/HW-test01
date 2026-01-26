@@ -67,10 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.remove("hidden");
   });
 
-  cancelBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-
   modal.addEventListener("pointerdown", (e) => {
   if (e.target === modal) {
     modal.classList.add("hidden");
@@ -88,17 +84,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  if (editingId) {
-    const h = data.find(x => x.id === editingId);
-    if (h) Object.assign(h, getFormData());
-  } else {
-    data.push({
-      id: Date.now(),
-      done: false,
-      lastNotify: "",
-      ...getFormData()
-    });
-  }
+  data.push({
+    id: Date.now(),
+    done: false,
+    lastNotify: "",
+    assigned: assigned.value,
+    due: due.value,
+    subject: subject.value,
+    title: title.value,
+    detail: detail.value,
+    teacher: teacher.value
+  });
+
+  save();
+  render();
+
+  modal.classList.add("hidden");
+  clearForm();
+
+  showToast("✅ บันทึกการบ้านแล้ว");
+}
 
   save();
   render();

@@ -2,12 +2,10 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>บันทึกการบ้าน</title>
-
-  <link rel="manifest" href="/HW-test01/manifest.json">
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -19,36 +17,35 @@
 
 <main id="list" class="container"></main>
 
-<!-- Modal -->
 <div id="modal" class="modal hidden">
-  <div class="modal-card">
-    <h2>➕ เพิ่มการบ้าน</h2>
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <h2>➕ ข้อมูลการบ้าน</h2>
 
-    <label>📥 วันที่ได้รับมอบหมาย</label>
+    <label>📅 วันที่สั่ง</label>
     <input type="date" id="assigned">
 
     <label>⏰ วันที่กำหนดส่ง</label>
     <input type="date" id="due">
 
-    <label>📘 รายวิชา</label>
+    <label>📘 วิชา</label>
     <input type="text" id="subject">
 
     <label>📝 ชื่องาน</label>
     <input type="text" id="title">
 
-    <label>📄 รายละเอียด</label>
-    <textarea id="detail"></textarea>
-
-    <label>👩‍🏫 ครูผู้สอน</label>
+    <label>👤 คุณครูผู้สอน</label>
     <input type="text" id="teacher">
 
+    <label>🔍 รายละเอียด</label>
+    <textarea id="detail"></textarea>
+
     <div class="actions">
-      <button id="saveBtn" type="button" class="save">บันทึก</button>
-      <button id="cancelBtn" type="button" class="cancel">ยกเลิก</button>
+      <button type="button" class="save">บันทึก</button>
+      <button type="button" class="cancel">ยกเลิก</button>
     </div>
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>

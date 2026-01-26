@@ -2,19 +2,18 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>บันทึกการบ้าน</title>
-  
-  <link rel="manifest" href="/HW-test01/manifest.json">
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
   <div class="summary">⏳ งานที่ค้าง: <span id="pendingCount">0</span></div>
   <h1>📚 บันทึกการบ้าน</h1>
-  <button id="addBtn">➕ เพิ่มการบ้าน</button>
+  <button id="addBtn" type="button">➕ เพิ่มการบ้าน</button>
 </header>
 
 <main id="list" class="container"></main>
@@ -24,23 +23,11 @@
   <div class="modal-card" onclick="event.stopPropagation()">
     <h2>➕ เพิ่มการบ้าน</h2>
 
-    <label>📥 วันที่ได้รับมอบหมาย</label>
-    <input type="date" id="assigned">
-
     <label>⏰ วันที่กำหนดส่ง</label>
     <input type="date" id="due">
 
-    <label>📘 รายวิชา</label>
-    <input type="text" id="subject">
-
-    <label>📝 ชื่องาน</label>
+    <label>📘 ชื่องาน</label>
     <input type="text" id="title">
-
-    <label>📄 รายละเอียด</label>
-    <textarea id="detail"></textarea>
-
-    <label>👩‍🏫 ครูผู้สอน</label>
-    <input type="text" id="teacher">
 
     <div class="actions">
       <button type="button" class="save">บันทึก</button>
@@ -52,3 +39,4 @@
 <script src="app.js" defer></script>
 </body>
 </html>
+

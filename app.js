@@ -123,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   saveBtn.addEventListener("click", handleSave);
-  saveBtn.addEventListener("touchstart", handleSave);
 
   /* ---------- Notification ---------- */
   function notify(h) {

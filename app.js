@@ -170,5 +170,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   render();
 });
-
-});

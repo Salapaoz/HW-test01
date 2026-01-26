@@ -73,7 +73,6 @@ function getFormData() {
   };
 }
 
-/* RENDER */
 function render() {
   list.innerHTML = "";
   let pending = 0;
@@ -109,9 +108,19 @@ function render() {
     list.appendChild(item);
   });
 
+  /* ===== อัปเดตตัวเลข ===== */
   pendingCount.textContent = pending;
   pendingBox.textContent = pending;
   soonBox.textContent = soon;
+
+  /* ===== เปลี่ยนสีการ์ดงานค้าง ===== */
+  const pendingCard = document.querySelector(".sum-card.pending");
+
+  if (pending === 0) {
+    pendingCard.classList.add("none");
+  } else {
+    pendingCard.classList.remove("none");
+  }
 }
 
 function openDetail(id) {

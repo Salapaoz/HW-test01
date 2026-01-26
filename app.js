@@ -1,14 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- Utils ---------- */
-  function parseDate(dateStr) {
-    return new Date(dateStr + "T00:00:00");
+  function isValidDate(dateStr) {
+    // Android / iOS safe check
+    if (!dateStr) return false;
+    if (dateStr.length !== 10) return false; // YYYY-MM-DD
+    const d = new Date(dateStr + "T00:00:00");
+    return !isNaN(d.getTime());
   }
 
-  function isValidDate(dateStr) {
-    if (!dateStr) return false;
-    const d = parseDate(dateStr);
-    return !isNaN(d.getTime());
+  function parseDate(dateStr) {
+    return new Date(dateStr + "T00:00:00");
   }
 
   /* ---------- State ---------- */
@@ -50,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
       assigned: assigned.value,
       due: due.value,
       subject: subject.value,
-      title: title.value,
+      title: title.value.trim(),
       detail: detail.value,
       teacher: teacher.value
     };
@@ -81,22 +83,23 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  modal.addEventListener("click", () => {
-    modal.classList.add("hidden");
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.add("hidden");
+    }
   });
 
-  // กันคลิกใน modal-card วิ่งออกไป (สำคัญมากบนมือถือ)
   modalCard.addEventListener("click", e => e.stopPropagation());
 
-  /* ---------- Save (FIXED) ---------- */
-  function handleSave(e) {
+  /* ---------- Save (FINAL FIX) ---------- */
+  saveBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     const hasTitle = title.value.trim().length > 0;
-    const hasValidDue = isValidDate(due.value);
+    const hasDue = isValidDate(due.value);
 
-    if (!hasTitle || !hasValidDue) {
+    if (!hasTitle || !hasDue) {
       showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
       return;
     }
@@ -108,32 +111,21 @@ document.addEventListener("DOMContentLoaded", () => {
       ...getFormData()
     });
 
-    try {
-      save();
-      render();
-    } catch (err) {
-      console.error(err);
-      showToast("❌ เกิดข้อผิดพลาด");
-      return;
-    }
+    save();
+    render();
 
     modal.classList.add("hidden");
     clearForm();
     showToast("✅ บันทึกการบ้านแล้ว");
-  }
-
-  saveBtn.addEventListener("click", handleSave);
+  });
 
   /* ---------- Notification ---------- */
   function notify(h) {
     if (!("Notification" in window)) return;
-
     if (Notification.permission === "granted") {
       new Notification("📌 งานใกล้ครบกำหนด", {
         body: `${h.title} เหลือไม่เกิน 3 วัน`
       });
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission();
     }
   }
 

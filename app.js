@@ -92,33 +92,55 @@ document.addEventListener("DOMContentLoaded", () => {
   modalCard.addEventListener("click", e => e.stopPropagation());
 
   /* ---------- Save (FINAL FIX) ---------- */
-  saveBtn.addEventListener("click", (e) => {
+ /* ---------- แก้ไขในไฟล์ app.js ---------- */
+
+saveBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const hasTitle = title.value.trim().length > 0;
-    const hasDue = isValidDate(due.value);
+    // 1. ดึงค่ามาเช็คก่อน
+    const titleVal = title.value.trim();
+    const dueVal = due.value; // ค่าจาก <input type="date">
 
-    if (!hasTitle || !hasDue) {
-      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
+    // 2. เช็คว่ากรอกข้อมูลสำคัญครบไหม (ชื่องาน และ วันที่)
+    if (!titleVal || !dueVal) {
+      showToast("กรุณากรอกข้อมูลให้ครบ!");
       return;
     }
 
-    data.push({
-      id: Date.now(),
-      done: false,
-      lastNotify: "",
-      ...getFormData()
-    });
+    // 3. เตรียมข้อมูล (ตัดการเช็ค isValidDate ที่เข้มงวดเกินไปออกเพื่อรองรับมือถือ)
+    const formData = getFormData();
+    
+    try {
+      if (editingId) {
+        // กรณีแก้ไขงานเดิม
+        const index = data.findIndex(x => x.id === editingId);
+        if (index !== -1) {
+          data[index] = { ...data[index], ...formData };
+        }
+      } else {
+        // กรณีเพิ่มงานใหม่
+        data.push({
+          id: Date.now(),
+          done: false,
+          lastNotify: "",
+          ...formData
+        });
+      }
 
-    save();
-    render();
+      // 4. บันทึกและรีเฟรชหน้าจอ
+      save();
+      render();
+      modal.classList.add("hidden");
+      clearForm();
+      editingId = null;
+      showToast("บันทึกสำเร็จ!"); // เปลี่ยนจากแจ้ง error เป็นสำเร็จ
 
-    modal.classList.add("hidden");
-    clearForm();
-    showToast("✅ บันทึกการบ้านแล้ว");
-  });
-
+    } catch (err) {
+      console.error(err);
+      showToast("เกิดข้อผิดพลาดในการบันทึก!");
+    }
+});
   /* ---------- Notification ---------- */
   function notify(h) {
     if (!("Notification" in window)) return;

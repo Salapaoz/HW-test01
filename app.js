@@ -1,22 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ---------- Utils ---------- */
-  function isValidDate(dateStr) {
-    // Android / iOS safe check
-    if (!dateStr) return false;
-    if (dateStr.length !== 10) return false; // YYYY-MM-DD
-    const d = new Date(dateStr + "T00:00:00");
-    return !isNaN(d.getTime());
-  }
-
-  function parseDate(dateStr) {
-    return new Date(dateStr + "T00:00:00");
-  }
-
-  /* ---------- State ---------- */
+  /* ================== STATE ================== */
   let data = JSON.parse(localStorage.getItem("hw") || "[]");
 
-  /* ---------- Elements ---------- */
+  /* ================== ELEMENTS ================== */
   const list = document.getElementById("list");
   const modal = document.getElementById("modal");
   const addBtn = document.getElementById("addBtn");
@@ -33,8 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const cancelBtn = document.querySelector(".cancel");
   const modalCard = document.querySelector(".modal-card");
 
-  /* ---------- Storage ---------- */
-  function save() {
+  /* ================== UTILS ================== */
+  function saveStorage() {
     localStorage.setItem("hw", JSON.stringify(data));
   }
 
@@ -47,18 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     teacher.value = "";
   }
 
-  function getFormData() {
-    return {
-      assigned: assigned.value,
-      due: due.value,
-      subject: subject.value,
-      title: title.value.trim(),
-      detail: detail.value,
-      teacher: teacher.value
-    };
-  }
-
-  /* ---------- Toast ---------- */
   function showToast(msg) {
     const toast = document.createElement("div");
     toast.className = "toast";
@@ -73,7 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2000);
   }
 
-  /* ---------- Modal ---------- */
+  function parseDateSafe(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(dateStr + "T00:00:00");
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  /* ================== MODAL ================== */
   addBtn.addEventListener("click", () => {
     clearForm();
     modal.classList.remove("hidden");
@@ -84,91 +65,54 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
-    }
+    if (e.target === modal) modal.classList.add("hidden");
   });
 
   modalCard.addEventListener("click", e => e.stopPropagation());
 
-  /* ---------- Save (FINAL FIX) ---------- */
- /* ---------- แก้ไขในไฟล์ app.js ---------- */
-
-saveBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // 1. ดึงค่ามาเช็คก่อน
+  /* ================== SAVE ================== */
+  saveBtn.addEventListener("click", () => {
     const titleVal = title.value.trim();
-    const dueVal = due.value; // ค่าจาก <input type="date">
+    const dueVal = due.value;
 
-    // 2. เช็คว่ากรอกข้อมูลสำคัญครบไหม (ชื่องาน และ วันที่)
     if (!titleVal || !dueVal) {
-      showToast("กรุณากรอกข้อมูลให้ครบ!");
+      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
       return;
     }
 
-    // 3. เตรียมข้อมูล (ตัดการเช็ค isValidDate ที่เข้มงวดเกินไปออกเพื่อรองรับมือถือ)
-    const formData = getFormData();
-    
-    try {
-      if (editingId) {
-        // กรณีแก้ไขงานเดิม
-        const index = data.findIndex(x => x.id === editingId);
-        if (index !== -1) {
-          data[index] = { ...data[index], ...formData };
-        }
-      } else {
-        // กรณีเพิ่มงานใหม่
-        data.push({
-          id: Date.now(),
-          done: false,
-          lastNotify: "",
-          ...formData
-        });
-      }
+    data.push({
+      id: Date.now(),
+      assigned: assigned.value,
+      due: dueVal,
+      subject: subject.value,
+      title: titleVal,
+      detail: detail.value,
+      teacher: teacher.value,
+      done: false,
+      lastNotify: ""
+    });
 
-      // 4. บันทึกและรีเฟรชหน้าจอ
-      save();
-      render();
-      modal.classList.add("hidden");
-      clearForm();
-      editingId = null;
-      showToast("บันทึกสำเร็จ!"); // เปลี่ยนจากแจ้ง error เป็นสำเร็จ
+    saveStorage();
+    render();
 
-    } catch (err) {
-      console.error(err);
-      showToast("เกิดข้อผิดพลาดในการบันทึก!");
-    }
-});
-  /* ---------- Notification ---------- */
-  function notify(h) {
-    if (!("Notification" in window)) return;
-    if (Notification.permission === "granted") {
-      new Notification("📌 งานใกล้ครบกำหนด", {
-        body: `${h.title} เหลือไม่เกิน 3 วัน`
-      });
-    }
-  }
+    modal.classList.add("hidden");
+    clearForm();
+    showToast("✅ บันทึกการบ้านแล้ว");
+  });
 
-  /* ---------- Render ---------- */
+  /* ================== RENDER ================== */
   function render() {
     list.innerHTML = "";
     let pending = 0;
     const todayKey = new Date().toDateString();
 
     data.forEach(h => {
-      const diff = Math.ceil(
-        (parseDate(h.due) - new Date()) / 86400000
-      );
+      const dueDate = parseDateSafe(h.due);
+      const diff = dueDate
+        ? Math.ceil((dueDate - new Date()) / 86400000)
+        : "-";
 
       if (!h.done) pending++;
-
-      if (!h.done && diff <= 3 && h.lastNotify !== todayKey) {
-        notify(h);
-        h.lastNotify = todayKey;
-        save();
-      }
 
       const card = document.createElement("div");
       card.className = `card ${h.done ? "done" : "pending"}`;
@@ -176,7 +120,7 @@ saveBtn.addEventListener("click", (e) => {
       card.innerHTML = `
         <h3>${h.subject || "-"} — ${h.title}</h3>
         <small>👩‍🏫 ${h.teacher || "-"}</small>
-        <small>⏰ ${h.due} (${diff} วัน)</small>
+        <small>⏰ ${h.due || "-"} (${diff} วัน)</small>
         <p>${h.detail || ""}</p>
         <div class="actions">
           <button class="doneBtn" type="button">✔</button>
@@ -184,19 +128,17 @@ saveBtn.addEventListener("click", (e) => {
         </div>
       `;
 
-      card.querySelector(".doneBtn").addEventListener("click", e => {
-        e.stopPropagation();
+      card.querySelector(".doneBtn").onclick = () => {
         h.done = !h.done;
-        save();
+        saveStorage();
         render();
-      });
+      };
 
-      card.querySelector(".delBtn").addEventListener("click", e => {
-        e.stopPropagation();
+      card.querySelector(".delBtn").onclick = () => {
         data = data.filter(x => x.id !== h.id);
-        save();
+        saveStorage();
         render();
-      });
+      };
 
       list.appendChild(card);
     });

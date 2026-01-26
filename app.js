@@ -1,8 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* ---------- Utils ---------- */
+  function parseDate(dateStr) {
+    return new Date(dateStr + "T00:00:00");
+  }
+
+  function isValidDate(dateStr) {
+    if (!dateStr) return false;
+    const d = parseDate(dateStr);
+    return !isNaN(d.getTime());
+  }
+
   /* ---------- State ---------- */
   let data = JSON.parse(localStorage.getItem("hw") || "[]");
-  let editingId = null;
 
   /* ---------- Elements ---------- */
   const list = document.getElementById("list");
@@ -19,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saveBtn = document.querySelector(".save");
   const cancelBtn = document.querySelector(".cancel");
+  const modalCard = document.querySelector(".modal-card");
 
   /* ---------- Storage ---------- */
   function save() {
@@ -62,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- Modal ---------- */
   addBtn.addEventListener("click", () => {
-    editingId = null;
     clearForm();
     modal.classList.remove("hidden");
   });
@@ -71,18 +81,22 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
-    }
+  modal.addEventListener("click", () => {
+    modal.classList.add("hidden");
   });
 
-  /* ---------- Save ---------- */
-  saveBtn.addEventListener("click", (e) => {
+  // กันคลิกใน modal-card วิ่งออกไป (สำคัญมากบนมือถือ)
+  modalCard.addEventListener("click", e => e.stopPropagation());
+
+  /* ---------- Save (FIXED) ---------- */
+  function handleSave(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!due.value || !title.value) {
+    const hasTitle = title.value.trim().length > 0;
+    const hasValidDue = isValidDate(due.value);
+
+    if (!hasTitle || !hasValidDue) {
       showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
       return;
     }
@@ -94,14 +108,22 @@ document.addEventListener("DOMContentLoaded", () => {
       ...getFormData()
     });
 
-    save();
-    render();
+    try {
+      save();
+      render();
+    } catch (err) {
+      console.error(err);
+      showToast("❌ เกิดข้อผิดพลาด");
+      return;
+    }
 
     modal.classList.add("hidden");
     clearForm();
-
     showToast("✅ บันทึกการบ้านแล้ว");
-  });
+  }
+
+  saveBtn.addEventListener("click", handleSave);
+  saveBtn.addEventListener("touchstart", handleSave);
 
   /* ---------- Notification ---------- */
   function notify(h) {
@@ -123,7 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayKey = new Date().toDateString();
 
     data.forEach(h => {
-      const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
+      const diff = Math.ceil(
+        (parseDate(h.due) - new Date()) / 86400000
+      );
+
       if (!h.done) pending++;
 
       if (!h.done && diff <= 3 && h.lastNotify !== todayKey) {
@@ -137,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.innerHTML = `
         <h3>${h.subject || "-"} — ${h.title}</h3>
-        <small>👩‍🏫 ${h.teacher || "-"}</small><br>
+        <small>👩‍🏫 ${h.teacher || "-"}</small>
         <small>⏰ ${h.due} (${diff} วัน)</small>
         <p>${h.detail || ""}</p>
         <div class="actions">
@@ -146,14 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      card.querySelector(".doneBtn").addEventListener("click", (e) => {
+      card.querySelector(".doneBtn").addEventListener("click", e => {
         e.stopPropagation();
         h.done = !h.done;
         save();
         render();
       });
 
-      card.querySelector(".delBtn").addEventListener("click", (e) => {
+      card.querySelector(".delBtn").addEventListener("click", e => {
         e.stopPropagation();
         data = data.filter(x => x.id !== h.id);
         save();
@@ -168,4 +193,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   render();
 });
-

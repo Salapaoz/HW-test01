@@ -14,8 +14,9 @@ const teacher = document.getElementById("teacher");
 
 const saveBtn = document.querySelector(".save");
 const cancelBtn = document.querySelector(".cancel");
+const doneBtn = document.querySelector(".done");
+const deleteBtn = document.querySelector(".delete");
 
-const pendingCount = document.getElementById("pendingCount");
 const pendingBox = document.getElementById("pendingBox");
 const soonBox = document.getElementById("soonBox");
 
@@ -37,6 +38,8 @@ function clearForm() {
 /* MODAL */
 addBtn.onclick = () => {
   clearForm();
+  doneBtn.style.display = "none";
+  deleteBtn.style.display = "none";
   modal.classList.remove("hidden");
 };
 
@@ -54,9 +57,32 @@ saveBtn.onclick = () => {
     const i = data.findIndex(x => x.id === editingId);
     data[i] = { ...data[i], ...getFormData() };
   } else {
-    data.push({ id: Date.now(), done: false, ...getFormData() });
+    data.push({
+      id: Date.now(),
+      done: false,
+      ...getFormData()
+    });
   }
 
+  saveStorage();
+  modal.classList.add("hidden");
+  render();
+};
+
+doneBtn.onclick = () => {
+  if (!editingId) return;
+  const i = data.findIndex(x => x.id === editingId);
+  if (i === -1) return;
+
+  data[i].done = true;
+  saveStorage();
+  modal.classList.add("hidden");
+  render();
+};
+
+deleteBtn.onclick = () => {
+  if (!editingId) return;
+  data = data.filter(x => x.id !== editingId);
   saveStorage();
   modal.classList.add("hidden");
   render();
@@ -73,6 +99,7 @@ function getFormData() {
   };
 }
 
+/* RENDER */
 function render() {
   list.innerHTML = "";
   let pending = 0;
@@ -108,14 +135,10 @@ function render() {
     list.appendChild(item);
   });
 
-  /* ===== อัปเดตตัวเลข ===== */
-  pendingCount.textContent = pending;
   pendingBox.textContent = pending;
   soonBox.textContent = soon;
 
-  /* ===== เปลี่ยนสีการ์ดงานค้าง ===== */
   const pendingCard = document.querySelector(".sum-card.pending");
-
   if (pending === 0) {
     pendingCard.classList.add("none");
   } else {
@@ -128,6 +151,7 @@ function openDetail(id) {
   if (!h) return;
 
   editingId = id;
+
   assigned.value = h.assigned;
   due.value = h.due;
   subject.value = h.subject;
@@ -135,6 +159,8 @@ function openDetail(id) {
   detail.value = h.detail;
   teacher.value = h.teacher;
 
+  doneBtn.style.display = "block";
+  deleteBtn.style.display = "block";
   modal.classList.remove("hidden");
 }
 

@@ -71,43 +71,39 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  modal.addEventListener("pointerdown", (e) => {
+  modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.classList.add("hidden");
     }
   });
 
   /* ---------- Save ---------- */
-  saveBtn.addEventListener("pointerup", handleSave);
+  saveBtn.addEventListener("click", handleSave);
 
- function handleSave(e) {
-  e.preventDefault();
+  function handleSave(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-  if (!due.value || !title.value) {
-    alert("กรอกวันที่ส่งและชื่องานก่อนนะ");
-    return;
+    if (!due.value || !title.value) {
+      showToast("❗ กรุณากรอกวันที่ส่งและชื่องาน");
+      return;
+    }
+
+    data.push({
+      id: Date.now(),
+      done: false,
+      lastNotify: "",
+      ...getFormData()
+    });
+
+    save();
+    render();
+
+    modal.classList.add("hidden");
+    clearForm();
+
+    showToast("✅ บันทึกการบ้านแล้ว");
   }
-
-  data.push({
-    id: Date.now(),
-    done: false,
-    lastNotify: "",
-    assigned: assigned.value,
-    due: due.value,
-    subject: subject.value,
-    title: title.value,
-    detail: detail.value,
-    teacher: teacher.value
-  });
-
-  localStorage.setItem("hw", JSON.stringify(data));
-
-  modal.classList.add("hidden");
-  clearForm();
-  render();
-
-  alert("บันทึกการบ้านแล้ว");
-}
 
   /* ---------- Notification ---------- */
   function notify(h) {
@@ -143,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.innerHTML = `
         <h3>${h.subject || "-"} — ${h.title}</h3>
-        <small>👩‍🏫 ${h.teacher || "-"}</small>
+        <small>👩‍🏫 ${h.teacher || "-"}</small><br>
         <small>⏰ ${h.due} (${diff} วัน)</small>
         <p>${h.detail || ""}</p>
         <div class="actions">

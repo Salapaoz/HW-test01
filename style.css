@@ -144,3 +144,8 @@ body {
   padding: 10px;
   border-radius: 12px;
 }
+
+/* ===== กรณีไม่มีงานค้าง ===== */
+.sum-card.pending.none {
+  background: #22c55e; /* สีเขียว */
+}

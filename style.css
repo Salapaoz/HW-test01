@@ -1,14 +1,19 @@
+/* style.css - ฉบับปรับปรุงสำหรับมือถือ */
+
 * {
   box-sizing: border-box;
-  font-family: 'Itim', sans-serif;
+  font-family: 'Itim', sans-serif; /* หรือฟอนต์ที่คุณใช้ */
 }
 
 body {
   margin: 0;
   background: #f6f8ff;
   color: #333;
+  /* ป้องกันการเลื่อนซ้ายขวาโดยไม่จำเป็น */
+  overflow-x: hidden;
 }
 
+/* --- ส่วนหัวด้านบน --- */
 .topbar {
   background: #6c8cff;
   color: white;
@@ -16,162 +21,192 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky; /* ให้เมนูติดด้านบนตลอดเวลา */
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.2rem;
 }
 
 .topbar button {
   background: white;
   color: #6c8cff;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.summary {
+  font-size: 0.9rem;
+}
+
+#pendingCount {
+  background: white;
+  color: #6c8cff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+/* --- พื้นที่แสดงรายการ --- */
 .container {
   padding: 1rem;
   max-width: 900px;
   margin: auto;
+  padding-bottom: 80px; /* เว้นที่ด้านล่างเผื่อกดไม่ติด */
 }
 
+/* --- การ์ดงานแต่ละชิ้น --- */
 .card {
-  background: rgb(255, 255, 255);
+  background: white;
   border-radius: 16px;
-  padding: 1rem;
+  padding: 1.2rem;
   margin-bottom: 1rem;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+  cursor: pointer;
+  position: relative;
 }
 
-.card.soon { border-left: 6px solid orange; }
-.card.today { border-left: 6px solid red; }
+.card:active {
+  transform: scale(0.98); /* เอฟเฟกต์กดยุบลงเล็กน้อย */
+}
+
+/* แถบสีสถานะด้านซ้าย */
+.card.pending {
+  border-left: 6px solid #ef4444; /* สีแดง (ยังไม่ทำ) */
+}
+
+.card.done {
+  border-left: 6px solid #22c55e; /* สีเขียว (ทำเสร็จแล้ว) */
+  background: #f0fdf4;
+  opacity: 0.9;
+}
 
 .card h3 {
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: #1f2937;
 }
 
 .card small {
-  color: #666;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
 }
 
+.card p {
+  background: #f3f4f6;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin: 0.8rem 0;
+  line-height: 1.5;
+}
+
+/* ปุ่มจัดการภายในการ์ด */
 .actions {
-  margin-top: 0.5rem;
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
 }
 
 .actions button {
+  flex: 1; /* ขยายปุ่มให้เต็มพื้นที่ กดง่ายบนมือถือ */
   border: none;
-  padding: 0.4rem 0.8rem;
+  padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
 }
 
-.done { background: #4ade80; }
-.del { background: #f87171; }
+.doneBtn { background: #34d399; }
+.delBtn { background: #f87171; }
 
-/* Modal */
+
+/* --- Modal (หน้าต่างกรอกข้อมูล) แก้ไขให้รองรับมือถือ --- */
 .modal {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
+  inset: 0; /* ครอบเต็มจอ */
+  background: rgba(0,0,0,0.6); /* พื้นหลังดำจางๆ */
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* จัดกึ่งกลาง */
+  z-index: 9999; /* อยู่บนสุดเสมอ */
+  padding: 1rem; /* เว้นขอบไม่ให้ชิดจอเกินไป */
+  backdrop-filter: blur(3px); /* เบลอฉากหลังนิดๆ */
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none !important;
+}
 
 .modal-card {
   background: white;
-  padding: 1.2rem;
+  padding: 1.5rem;
   border-radius: 20px;
-  width: 90%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 450px;
+  
+  /* --- จุดสำคัญสำหรับการเลื่อนบนมือถือ --- */
+  max-height: 85vh; /* สูงไม่เกิน 85% ของจอ */
+  overflow-y: auto; /* เนื้อหายาวให้เลื่อนได้ */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .modal-card h2 {
   margin-top: 0;
+  text-align: center;
+  color: #4f46e5;
 }
 
 .modal-card label {
   display: block;
-  margin-top: 0.6rem;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
 }
 
 .modal-card input,
 .modal-card textarea {
   width: 100%;
-  padding: 0.4rem;
-  margin-top: 0.2rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 16px; /* ขนาด 16px ป้องกัน iOS ซูมเองตอนพิมพ์ */
+  background: #f9fafb;
+}
+
+.modal-card input:focus,
+.modal-card textarea:focus {
+  outline: 2px solid #6c8cff;
+  border-color: transparent;
 }
 
 .modal-card textarea {
-  resize: none;
-  height: 60px;
+  resize: vertical;
+  min-height: 80px;
 }
 
+/* ปุ่ม Save/Cancel ใน Modal */
 .modal-card .actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
-.save {
-  background: #6c8cff;
-  color: rgb(0, 0, 0);
-}
-
-.cancel {
-  background: #ddd;
-}
-
-summary {
-  max-width: 420px;
-  margin: 12px auto;
-  padding: 12px 18px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  background: linear-gradient(135deg, #ffe4e6, #eef2ff);
-  border-radius: 16px;
-
-  font-size: 1.1rem;
-  font-weight: 500;
-
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-}
-
-/* ตัวเลขงานค้าง */
-#pendingCount {
-  background: #ef4444;
-  color: white;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-weight: bold;
-  font-size: 1.2rem;
-  min-width: 42px;
-  text-align: center;
-}
-
-/* งานเสร็จ */
-.card.done {
-  border-left: 6px solid #22c55e;
-  background: #f0fdf4;
-}
-
-/* งานค้าง */
-.card.pending {
-  border-left: 6px solid #ef4444;
-}
-
-/* คลิกดูรายละเอียด */
-.card {
-  cursor: pointer;
-}
-
-#pendingCount:empty,
-#pendingCount.zero {
-  background: #22c55e;
-}
+.save { background: #4f46e5; color: white; }
+.cancel { background: #e5e7eb; color: #374151; }

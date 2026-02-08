@@ -5,12 +5,13 @@ const list = document.getElementById("list");
 const modal = document.getElementById("modal");
 const addBtn = document.getElementById("addBtn");
 
-const assigned = document.getElementById("assigned");
+/* --- ตัดตัวแปรที่ไม่ใช้ออก --- */
+// const assigned = document.getElementById("assigned");
 const due = document.getElementById("due");
 const subject = document.getElementById("subject");
 const title = document.getElementById("title");
 const detail = document.getElementById("detail");
-const teacher = document.getElementById("teacher");
+// const teacher = document.getElementById("teacher");
 
 const saveBtn = document.querySelector(".save");
 const cancelBtn = document.querySelector(".cancel");
@@ -26,12 +27,12 @@ function saveStorage() {
 }
 
 function clearForm() {
-  assigned.value = "";
+  // assigned.value = "";
   due.value = "";
   subject.value = "";
   title.value = "";
   detail.value = "";
-  teacher.value = "";
+  // teacher.value = "";
   editingId = null;
 }
 
@@ -51,7 +52,10 @@ modal.onclick = e => {
 
 /* SAVE */
 saveBtn.onclick = () => {
-  if (!title.value || !due.value) return;
+  if (!title.value || !due.value) {
+    alert("กรุณากรอกชื่องานและวันที่ส่งครับ ✨");
+    return;
+  }
 
   if (editingId) {
     const i = data.findIndex(x => x.id === editingId);
@@ -90,45 +94,61 @@ deleteBtn.onclick = () => {
 
 function getFormData() {
   return {
-    assigned: assigned.value,
+    // assigned: assigned.value,
     due: due.value,
     subject: subject.value,
     title: title.value,
     detail: detail.value,
-    teacher: teacher.value
+    // teacher: teacher.value
   };
 }
 
-/* RENDER */
+/* RENDER (ปรับปรุงใหม่) */
 function render() {
   list.innerHTML = "";
   let pending = 0;
   let soon = 0;
 
-  data.forEach(h => {
-    const diff = Math.ceil(
-      (new Date(h.due) - new Date()) / 86400000
-    );
+  // เรียงลำดับ: ยังไม่เสร็จขึ้นก่อน, ตามด้วยวันที่ส่ง
+  const sortedData = [...data].sort((a, b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return new Date(a.due) - new Date(b.due);
+  });
 
-    let status = "ค้าง";
-    let cls = "status-pending";
+  sortedData.forEach(h => {
+    const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
+    let statusText = `${diff} วัน`;
+    let statusCls = "status-pending";
+    let cardCls = "";
 
     if (h.done) {
-      status = "เสร็จแล้ว";
-      cls = "status-done";
-    } else if (diff <= 1) {
-      status = "ใกล้ส่ง";
-      cls = "status-soon";
-      soon++;
+      statusText = "✔ เสร็จแล้ว";
+      statusCls = "status-done";
+      cardCls = "done-card";
+    } else {
+      pending++;
+      if (diff < 0) {
+        statusText = "⚠️ เกินกำหนด";
+        statusCls = "status-soon";
+      } else if (diff <= 1) {
+        statusText = "🔥 ใกล้ส่ง";
+        statusCls = "status-soon";
+        soon++;
+      }
     }
 
-    if (!h.done) pending++;
-
     const item = document.createElement("div");
-    item.className = "task-item";
+    item.className = `task-item ${cardCls}`;
+    // แสดงผลเป็นการ์ดแบบใหม่
     item.innerHTML = `
-      <div class="task-title">${h.title}</div>
-      <div class="task-status ${cls}">${status}</div>
+      <div class="task-header">
+        <h3 class="task-title">${h.title}</h3>
+        <span class="task-status ${statusCls}">${statusText}</span>
+      </div>
+      <div class="task-meta">
+        <span>📘 ${h.subject || "ไม่ระบุวิชา"}</span>
+        <span>📅 ส่ง: ${new Date(h.due).toLocaleDateString('th-TH')}</span>
+      </div>
     `;
 
     item.onclick = () => openDetail(h.id);
@@ -152,12 +172,12 @@ function openDetail(id) {
 
   editingId = id;
 
-  assigned.value = h.assigned;
+  // assigned.value = h.assigned;
   due.value = h.due;
   subject.value = h.subject;
   title.value = h.title;
   detail.value = h.detail;
-  teacher.value = h.teacher;
+  // teacher.value = h.teacher;
 
   doneBtn.style.display = "block";
   deleteBtn.style.display = "block";

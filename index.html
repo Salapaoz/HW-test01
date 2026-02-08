@@ -3,32 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homework Space</title>
+  <title>My Homework Space</title>
   <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="brand">📚 Homework Space</div>
+  <div class="brand">📚My Homework</div>
   <div class="top-actions">
-    <button id="subjectBtn" class="sub-btn">📂 จัดการวิชา</button>
-    <button id="addBtn" class="add-btn">＋ เพิ่มงาน</button>
+    <button id="subjectBtn" class="btn-sub-manage">📂 จัดการวิชา</button>
+    <button id="addBtn" class="btn-add-main">＋ เพิ่มงานใหม่</button>
   </div>
 </header>
 
-<section class="summary">
+<section class="summary-container">
   <div class="sum-card pending">
-    <div class="sum-info">
-      <h3>งานค้าง</h3>
-      <span id="pendingBox">0</span>
-    </div>
+    <h3>🦥 งานค้าง</h3>
+    <span id="pendingBox">0</span>
   </div>
   <div class="sum-card soon">
-    <div class="sum-info">
-      <h3>ใกล้ส่ง</h3>
-      <span id="soonBox">0</span>
-    </div>
+    <h3>🔥 ใกล้ส่ง</h3>
+    <span id="soonBox">0</span>
   </div>
 </section>
 
@@ -40,39 +36,47 @@
 <main id="list" class="task-list"></main>
 
 <div id="subModal" class="modal hidden">
-  <div class="modal-card">
-    <h2>📚 รายวิชาทั้งหมด</h2>
-    <div class="add-subject-row">
-      <input type="text" id="newSubjectInput" placeholder="ชื่อวิชาใหม่...">
+  <div class="modal-card glass">
+    <h2>📚 หมวดหมู่รายวิชา</h2>
+    <div class="add-sub-row">
+      <input type="text" id="newSubjectInput" placeholder="เพิ่มวิชาใหม่...">
       <button id="addNewSubjectBtn">เพิ่ม</button>
     </div>
-    <div id="subjectManagementList" class="sub-manage-list">
-      </div>
-    <button class="btn-secondary full-width" id="closeSubBtn">ปิดหน้าต่าง</button>
+    <div id="subjectManagementList" class="sub-manage-list"></div>
+    <button class="btn-full btn-gray" id="closeSubBtn">ปิดหน้าต่าง</button>
   </div>
 </div>
 
 <div id="modal" class="modal hidden">
-  <div class="modal-card">
+  <div class="modal-card glass">
     <h2 id="modalTitle">✏️ รายละเอียดงาน</h2>
     
-    <label>🏷️ ชื่องาน</label>
-    <input type="text" id="title" placeholder="การบ้านวิชา...">
+    <div class="input-group">
+      <label>ชื่องาน</label>
+      <input type="text" id="title" placeholder="ทำการบ้านหน้าไหน...">
+    </div>
 
-    <label>⏰ วันที่ส่ง</label>
-    <input type="date" id="due">
+    <div class="input-group">
+      <label>วันที่ส่ง</label>
+      <input type="date" id="due">
+    </div>
 
-    <label>📘 เลือกวิชา</label>
-    <select id="subjectSelect"></select>
+    <div class="input-group">
+      <label>เลือกวิชา</label>
+      <select id="subjectSelect"></select>
+    </div>
 
-    <label>📝 โน้ตเพิ่มเติม</label>
-    <textarea id="detail" rows="3"></textarea>
+    <div class="input-group">
+      <label>โน้ตเพิ่มเติม</label>
+      <textarea id="detail" rows="3" placeholder="ระบุรายละเอียด..."></textarea>
+    </div>
 
-    <div class="modal-actions-grid">
-      <button id="toggleDoneBtn" class="btn-success">✔ เสร็จแล้ว</button>
-      <button id="deleteBtn" class="btn-danger">🗑️ ลบงาน</button>
-      <button id="saveBtn" class="btn-primary">💾 บันทึก</button>
-      <button id="cancelModalBtn" class="btn-secondary">❌ ยกเลิก</button>
+    <div class="modal-grid">
+      <button id="toggleDoneBtn" class="btn-done">✔ เสร็จแล้ว</button>
+      <button id="deleteBtn" class="btn-delete">🗑️ ลบงาน</button>
+      
+      <button id="saveBtn" class="btn-save">💾 บันทึก</button>
+      <button id="cancelModalBtn" class="btn-cancel">❌ ยกเลิก</button>
     </div>
   </div>
 </div>

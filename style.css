@@ -1,95 +1,70 @@
 * { box-sizing: border-box; font-family: 'Itim', cursive; }
-body { margin: 0; background: #f3f4f6; color: #374151; padding-bottom: 50px; }
+body { margin: 0; background: #f0f2f5; color: #333; padding-bottom: 30px; }
 
-/* TOPBAR */
+/* Header & Summary */
 .topbar { 
-  background: white; padding: 15px 20px; display: flex; 
-  justify-content: space-between; align-items: center;
-  position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  background: #6366f1; color: white; padding: 15px 20px; 
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; z-index: 100;
 }
-.brand { font-size: 1.3rem; font-weight: bold; color: #7c3aed; }
-.top-actions { display: flex; gap: 8px; }
-.add-btn, .sub-btn { 
-  border: none; padding: 8px 15px; border-radius: 12px; 
-  font-weight: bold; cursor: pointer; transition: 0.2s;
-}
-.add-btn { background: #7c3aed; color: white; }
-.sub-btn { background: #f3f4f6; color: #4b5563; }
+.brand { font-size: 1.2rem; font-weight: bold; }
+.add-btn { background: white; color: #6366f1; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+.sub-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; margin-right: 5px; }
 
-/* SUMMARY */
-.summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 800px; margin: auto; }
+.summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 600px; margin: auto; }
 .sum-card { border-radius: 15px; padding: 15px; color: white; display: flex; align-items: center; gap: 10px; }
 .sum-card.pending { background: #f59e0b; }
-.sum-card.pending.none { background: #10b981; }
 .sum-card.soon { background: #ef4444; }
-.sum-icon { font-size: 1.5rem; background: rgba(255,255,255,0.2); padding: 5px; border-radius: 50%; }
+.sum-card h3 { margin: 0; font-size: 0.9rem; opacity: 0.9; }
+#pendingBox, #soonBox { font-size: 1.5rem; font-weight: bold; }
 
-/* FILTER BAR (หัวใจสำคัญ) */
+/* Filter Bar (ลากได้) */
 .filter-wrapper {
-  display: flex; align-items: center; max-width: 800px;
+  display: flex; align-items: center; max-width: 600px;
   margin: 0 auto 15px auto; padding: 0 20px; gap: 10px;
 }
 #fixedFilter { flex-shrink: 0; }
 .filter-scroll {
   display: flex; gap: 10px; overflow-x: auto;
-  padding: 5px 0; scrollbar-width: none; /* ซ่อน scrollbar */
+  padding: 5px 0; scrollbar-width: none;
+  cursor: grab; /* เปลี่ยนหัวเมาส์เป็นรูปมือ */
+  user-select: none; /* กันการคลุมดำตอนลาก */
 }
+.filter-scroll:active { cursor: grabbing; }
 .filter-scroll::-webkit-scrollbar { display: none; }
 
 .filter-chip {
-  background: white; border: 1.5px solid #d1d5db; color: #6b7280;
-  padding: 6px 15px; border-radius: 20px; white-space: nowrap;
-  cursor: pointer; font-weight: bold; transition: 0.2s;
+  background: white; border: 1px solid #ddd; padding: 6px 15px;
+  border-radius: 20px; white-space: nowrap; cursor: pointer;
 }
-.filter-chip.active {
-  background: #7c3aed; color: white; border-color: #7c3aed;
-}
+.filter-chip.active { background: #6366f1; color: white; border-color: #6366f1; }
 
-/* LIST & CARDS */
-.task-list { max-width: 800px; margin: auto; padding: 0 20px; }
-.task-item { 
-  background: white; border-radius: 15px; padding: 15px; 
-  margin-bottom: 12px; cursor: pointer; border-left: 5px solid #d1d5db;
-}
-.task-item.done-card { opacity: 0.6; border-left-color: #10b981; }
-.task-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
-.task-title { font-weight: bold; font-size: 1.1rem; }
-.task-status { font-size: 0.8rem; padding: 3px 8px; border-radius: 10px; color: white; }
-.status-pending { background: #f59e0b; }
-.status-soon { background: #ef4444; }
-.status-done { background: #10b981; }
-.subject-tag { color: #7c3aed; font-size: 0.85rem; font-weight: bold; }
-
-/* MODALS */
-.modal { 
-  position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
-  display: flex; justify-content: center; align-items: center; z-index: 1000;
-}
+/* Modal & Equal Buttons */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
 .hidden { display: none; }
-.modal-card { 
-  background: white; width: 90%; max-width: 400px; 
-  padding: 20px; border-radius: 20px; max-height: 90vh; overflow-y: auto;
-}
-.modal-card label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.9rem; }
+.modal-card { background: white; width: 92%; max-width: 400px; padding: 20px; border-radius: 20px; }
+.modal-card label { display: block; margin-top: 10px; font-weight: bold; }
 .modal-card input, .modal-card select, .modal-card textarea {
-  width: 100%; padding: 10px; margin-top: 5px; border-radius: 10px; border: 1px solid #ddd;
+  width: 100%; padding: 10px; margin-top: 5px; border-radius: 10px; border: 1px solid #ddd; font-size: 1rem;
 }
-.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-.actions button, .cancel-btn { 
-  border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; 
+
+/* จุดที่แก้: ปุ่มบันทึกกับยกเลิกเท่ากัน */
+.actions { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; /* แบ่ง 2 คอลัมน์เท่ากัน */
+  gap: 10px; 
+  margin-top: 20px; 
 }
-.save { grid-column: span 2; background: #7c3aed; color: white; }
+.actions button { 
+  padding: 12px; border: none; border-radius: 10px; 
+  font-weight: bold; cursor: pointer; font-size: 1rem;
+}
+.save { background: #6366f1; color: white; }
 .cancel-btn { background: #e5e7eb; color: #4b5563; }
 .delete { background: #fee2e2; color: #ef4444; }
 .done { background: #dcfce7; color: #166534; }
-.undone { background: #fef3c7; color: #92400e; }
-.full-width { width: 100%; margin-top: 10px; }
 
-/* SUBJECT LIST IN MODAL */
-.subject-list { list-style: none; padding: 0; margin: 15px 0; }
-.subject-item { 
-  display: flex; justify-content: space-between; padding: 8px; 
-  border-bottom: 1px solid #f3f4f6; 
-}
-.add-subject-row { display: flex; gap: 5px; }
-.add-subject-row button { background: #7c3aed; color: white; border: none; border-radius: 8px; width: 40px; }
+/* รายการงาน */
+.task-list { max-width: 600px; margin: auto; padding: 0 20px; }
+.task-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.task-item.done-card { opacity: 0.5; border-left: 5px solid #22c55e; }

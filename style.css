@@ -1,70 +1,75 @@
+:root {
+  --primary: #6366f1; --primary-dark: #4f46e5;
+  --success: #10b981; --danger: #f43f5e;
+  --secondary: #94a3b8; --bg: #f8fafc;
+}
+
 * { box-sizing: border-box; font-family: 'Itim', cursive; }
-body { margin: 0; background: #f0f2f5; color: #333; padding-bottom: 30px; }
+body { margin: 0; background: var(--bg); color: #1e293b; padding-bottom: 40px; }
 
-/* Header & Summary */
+/* Header */
 .topbar { 
-  background: #6366f1; color: white; padding: 15px 20px; 
-  display: flex; justify-content: space-between; align-items: center;
-  position: sticky; top: 0; z-index: 100;
+  background: white; padding: 15px 20px; display: flex; 
+  justify-content: space-between; align-items: center;
+  position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-.brand { font-size: 1.2rem; font-weight: bold; }
-.add-btn { background: white; color: #6366f1; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-.sub-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; margin-right: 5px; }
+.brand { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
+.add-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; }
+.sub-btn { background: #f1f5f9; color: #475569; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; }
 
-.summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 600px; margin: auto; }
-.sum-card { border-radius: 15px; padding: 15px; color: white; display: flex; align-items: center; gap: 10px; }
-.sum-card.pending { background: #f59e0b; }
-.sum-card.soon { background: #ef4444; }
+/* Summary Cards */
+.summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 700px; margin: auto; }
+.sum-card { border-radius: 20px; padding: 20px; color: white; transition: 0.3s; }
+.sum-card.pending { background: linear-gradient(135deg, #6366f1, #a855f7); }
+.sum-card.soon { background: linear-gradient(135deg, #f43f5e, #fb923c); }
 .sum-card h3 { margin: 0; font-size: 0.9rem; opacity: 0.9; }
-#pendingBox, #soonBox { font-size: 1.5rem; font-weight: bold; }
+.sum-card span { font-size: 2rem; font-weight: bold; }
 
-/* Filter Bar (ลากได้) */
-.filter-wrapper {
-  display: flex; align-items: center; max-width: 600px;
-  margin: 0 auto 15px auto; padding: 0 20px; gap: 10px;
+/* Filter Bar */
+.filter-wrapper { display: flex; align-items: center; max-width: 700px; margin: 0 auto 20px; padding: 0 20px; gap: 10px; }
+.filter-scroll { 
+  display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; 
+  scrollbar-width: none; cursor: grab; user-select: none;
 }
-#fixedFilter { flex-shrink: 0; }
-.filter-scroll {
-  display: flex; gap: 10px; overflow-x: auto;
-  padding: 5px 0; scrollbar-width: none;
-  cursor: grab; /* เปลี่ยนหัวเมาส์เป็นรูปมือ */
-  user-select: none; /* กันการคลุมดำตอนลาก */
-}
-.filter-scroll:active { cursor: grabbing; }
 .filter-scroll::-webkit-scrollbar { display: none; }
-
-.filter-chip {
-  background: white; border: 1px solid #ddd; padding: 6px 15px;
-  border-radius: 20px; white-space: nowrap; cursor: pointer;
+.filter-chip { 
+  background: white; border: 1.5px solid #e2e8f0; padding: 6px 18px; 
+  border-radius: 20px; white-space: nowrap; cursor: pointer; font-weight: 500;
 }
-.filter-chip.active { background: #6366f1; color: white; border-color: #6366f1; }
+.filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* Modal & Equal Buttons */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+/* Task List */
+.task-list { max-width: 700px; margin: auto; padding: 0 20px; }
+.task-item { 
+  background: white; padding: 18px; border-radius: 18px; margin-bottom: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer; border-left: 6px solid #e2e8f0;
+}
+.task-item.done-card { border-left-color: var(--success); opacity: 0.6; }
+
+/* Modal & Buttons */
+.modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
 .hidden { display: none; }
-.modal-card { background: white; width: 92%; max-width: 400px; padding: 20px; border-radius: 20px; }
-.modal-card label { display: block; margin-top: 10px; font-weight: bold; }
+.modal-card { background: white; width: 100%; max-width: 450px; padding: 25px; border-radius: 24px; max-height: 90vh; overflow-y: auto; }
+.modal-card label { display: block; margin-top: 15px; font-weight: bold; color: #64748b; font-size: 0.85rem; }
 .modal-card input, .modal-card select, .modal-card textarea {
-  width: 100%; padding: 10px; margin-top: 5px; border-radius: 10px; border: 1px solid #ddd; font-size: 1rem;
+  width: 100%; padding: 12px; margin-top: 6px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 1rem;
 }
 
-/* จุดที่แก้: ปุ่มบันทึกกับยกเลิกเท่ากัน */
-.actions { 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; /* แบ่ง 2 คอลัมน์เท่ากัน */
-  gap: 10px; 
-  margin-top: 20px; 
+/* จุดที่แก้: ปุ่มขนาดเท่ากัน */
+.modal-actions-grid { 
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; 
 }
-.actions button { 
-  padding: 12px; border: none; border-radius: 10px; 
-  font-weight: bold; cursor: pointer; font-size: 1rem;
+.btn-primary { background: var(--primary); color: white; grid-column: span 2; }
+.btn-secondary { background: #f1f5f9; color: #475569; }
+.btn-success { background: #dcfce7; color: #15803d; }
+.btn-danger { background: #fee2e2; color: #b91c1c; }
+.btn-primary, .btn-secondary, .btn-success, .btn-danger {
+  border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.95rem;
 }
-.save { background: #6366f1; color: white; }
-.cancel-btn { background: #e5e7eb; color: #4b5563; }
-.delete { background: #fee2e2; color: #ef4444; }
-.done { background: #dcfce7; color: #166534; }
+.full-width { width: 100%; margin-top: 15px; }
 
-/* รายการงาน */
-.task-list { max-width: 600px; margin: auto; padding: 0 20px; }
-.task-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.task-item.done-card { opacity: 0.5; border-left: 5px solid #22c55e; }
+/* Management List */
+.sub-manage-list { margin: 15px 0; max-height: 200px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 12px; }
+.sub-item { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #f1f5f9; align-items: center; }
+.add-subject-row { display: flex; gap: 8px; }
+.add-subject-row button { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 10px; }

@@ -3,45 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homework Manager Pro</title>
+  <title>Homework Space</title>
   <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="brand">📚 My Homework</div>
+  <div class="brand">🚀 Homework Space</div>
   <div class="top-actions">
-    <button id="subjectBtn" class="sub-btn">📂 จัดการวิชา</button>
-    <button id="addBtn" class="add-btn">✨ เพิ่มงาน</button>
+    <button id="subjectBtn" class="sub-btn">📚 จัดการวิชา</button>
+    <button id="addBtn" class="add-btn">＋ เพิ่มงาน</button>
   </div>
 </header>
 
 <section class="summary">
   <div class="sum-card pending">
-    <span class="icon">⏳</span>
-    <div><h3>งานค้าง</h3><span id="pendingBox">0</span></div>
+    <div class="sum-info">
+      <h3>งานค้าง</h3>
+      <span id="pendingBox">0</span>
+    </div>
   </div>
   <div class="sum-card soon">
-    <span class="icon">🔥</span>
-    <div><h3>ใกล้ส่ง</h3><span id="soonBox">0</span></div>
+    <div class="sum-info">
+      <h3>ใกล้ส่ง</h3>
+      <span id="soonBox">0</span>
+    </div>
   </div>
 </section>
 
 <div class="filter-wrapper">
-  <div id="fixedFilter"></div> <nav id="subjectScroll" class="filter-scroll"></nav> </div>
+  <div id="fixedFilter"></div>
+  <nav id="subjectScroll" class="filter-scroll"></nav>
+</div>
 
 <main id="list" class="task-list"></main>
 
 <div id="subModal" class="modal hidden">
-  <div class="modal-card small-card">
-    <h2>📂 หมวดหมู่วิชา</h2>
+  <div class="modal-card">
+    <h2>📚 รายวิชาทั้งหมด</h2>
     <div class="add-subject-row">
-      <input type="text" id="newSubjectInput" placeholder="ชื่อวิชา...">
-      <button id="addNewSubjectBtn">＋</button>
+      <input type="text" id="newSubjectInput" placeholder="ชื่อวิชาใหม่...">
+      <button id="addNewSubjectBtn">เพิ่ม</button>
     </div>
-    <ul id="subjectList" class="subject-list"></ul>
-    <button class="cancel-btn full-width" id="closeSubBtn">ปิด</button>
+    <div id="subjectManagementList" class="sub-manage-list">
+      </div>
+    <button class="btn-secondary full-width" id="closeSubBtn">ปิดหน้าต่าง</button>
   </div>
 </div>
 
@@ -50,22 +57,22 @@
     <h2 id="modalTitle">✏️ รายละเอียดงาน</h2>
     
     <label>🏷️ ชื่องาน</label>
-    <input type="text" id="title" placeholder="ทำการบ้านหน้า...">
+    <input type="text" id="title" placeholder="การบ้านวิชา...">
 
     <label>⏰ วันที่ส่ง</label>
     <input type="date" id="due">
 
-    <label>📘 รายวิชา</label>
+    <label>📘 เลือกวิชา</label>
     <select id="subjectSelect"></select>
 
-    <label>📝 รายละเอียด</label>
+    <label>📝 โน้ตเพิ่มเติม</label>
     <textarea id="detail" rows="3"></textarea>
 
-    <div class="actions">
-      <button class="done" id="toggleDoneBtn">✔ เสร็จแล้ว</button>
-      <button class="delete" id="deleteBtn">🗑 ลบ</button>
-      <button class="save" id="saveBtn">💾 บันทึก</button>
-      <button class="cancel-btn" id="cancelModalBtn">❌ ยกเลิก</button>
+    <div class="modal-actions-grid">
+      <button id="toggleDoneBtn" class="btn-success">✔ เสร็จแล้ว</button>
+      <button id="deleteBtn" class="btn-danger">🗑 ลบงาน</button>
+      <button id="saveBtn" class="btn-primary">💾 บันทึก</button>
+      <button id="cancelModalBtn" class="btn-secondary">❌ ยกเลิก</button>
     </div>
   </div>
 </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Homework Manager</title>
+  <title>Homework Manager Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -19,61 +19,53 @@
 
 <section class="summary">
   <div class="sum-card pending">
-    <div class="sum-icon">⏳</div>
-    <div>
-      <h3>งานที่ค้าง</h3>
-      <span id="pendingBox">0</span>
-    </div>
+    <span class="icon">⏳</span>
+    <div><h3>งานค้าง</h3><span id="pendingBox">0</span></div>
   </div>
   <div class="sum-card soon">
-    <div class="sum-icon">🔥</div>
-    <div>
-      <h3>ใกล้ส่ง</h3>
-      <span id="soonBox">0</span>
-    </div>
+    <span class="icon">🔥</span>
+    <div><h3>ใกล้ส่ง</h3><span id="soonBox">0</span></div>
   </div>
 </section>
 
 <div class="filter-wrapper">
-  <div id="fixedFilter"></div>
-  <nav id="subjectScroll" class="filter-scroll"></nav>
-</div>
+  <div id="fixedFilter"></div> <nav id="subjectScroll" class="filter-scroll"></nav> </div>
 
 <main id="list" class="task-list"></main>
 
 <div id="subModal" class="modal hidden">
   <div class="modal-card small-card">
-    <h2>📂 รายวิชา</h2>
+    <h2>📂 หมวดหมู่วิชา</h2>
     <div class="add-subject-row">
-      <input type="text" id="newSubjectInput" placeholder="เพิ่มวิชาใหม่...">
+      <input type="text" id="newSubjectInput" placeholder="ชื่อวิชา...">
       <button id="addNewSubjectBtn">＋</button>
     </div>
     <ul id="subjectList" class="subject-list"></ul>
-    <button class="cancel-btn full-width" id="closeSubBtn">ปิดหน้าต่าง</button>
+    <button class="cancel-btn full-width" id="closeSubBtn">ปิด</button>
   </div>
 </div>
 
 <div id="modal" class="modal hidden">
   <div class="modal-card">
     <h2 id="modalTitle">✏️ รายละเอียดงาน</h2>
+    
+    <label>🏷️ ชื่องาน</label>
+    <input type="text" id="title" placeholder="ทำการบ้านหน้า...">
 
-    <label>🏷️ ชื่องาน *</label>
-    <input type="text" id="title" placeholder="เช่น การบ้านหน้า 5">
-
-    <label>⏰ วันที่ส่ง *</label>
+    <label>⏰ วันที่ส่ง</label>
     <input type="date" id="due">
 
     <label>📘 รายวิชา</label>
     <select id="subjectSelect"></select>
 
     <label>📝 รายละเอียด</label>
-    <textarea id="detail" class="detail-box" placeholder="โน้ตเพิ่มเติม..."></textarea>
+    <textarea id="detail" rows="3"></textarea>
 
     <div class="actions">
       <button class="done" id="toggleDoneBtn">✔ เสร็จแล้ว</button>
       <button class="delete" id="deleteBtn">🗑 ลบ</button>
       <button class="save" id="saveBtn">💾 บันทึก</button>
-      <button class="cancel-btn" id="cancelModalBtn">ยกเลิก</button>
+      <button class="cancel-btn" id="cancelModalBtn">❌ ยกเลิก</button>
     </div>
   </div>
 </div>

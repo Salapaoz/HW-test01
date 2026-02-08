@@ -3,56 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>บันทึกการบ้าน</title>
+  <title>My Homework</title>
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="title">📘 บันทึกการบ้าน</div>
-  <button id="addBtn">＋ เพิ่มการบ้าน</button>
+  <div class="brand">
+    <span class="icon">📚</span> My Homework
+  </div>
+  <button id="addBtn" class="add-btn">
+    <span class="icon">✨</span> เพิ่มงาน
+  </button>
 </header>
 
 <section class="summary">
   <div class="sum-card pending">
-    <h3>⏳ งานที่ค้าง</h3>
-    <span id="pendingBox">0</span>
+    <div class="sum-icon">⏳</div>
+    <div>
+      <h3>งานที่ค้าง</h3>
+      <span id="pendingBox">0</span>
+    </div>
   </div>
   <div class="sum-card soon">
-    <h3>🔥 ใกล้ส่ง</h3>
-    <span id="soonBox">0</span>
+    <div class="sum-icon">🔥</div>
+    <div>
+      <h3>ใกล้ส่ง</h3>
+      <span id="soonBox">0</span>
+    </div>
   </div>
 </section>
 
 <main id="list" class="task-list"></main>
 
-<!-- MODAL -->
 <div id="modal" class="modal hidden">
   <div class="modal-card">
-    <h2>📝 รายละเอียดการบ้าน</h2>
+    <h2>✏️ รายละเอียดงาน</h2>
 
-    <label>📅 วันที่ได้รับมอบหมาย</label>
-    <input type="date" id="assigned">
+    <label>🏷️ ชื่องาน *</label>
+    <input type="text" id="title" placeholder="เช่น การบ้านคณิตฯ">
 
-    <label>⏰ วันที่ส่ง</label>
+    <label>⏰ วันที่ส่ง *</label>
     <input type="date" id="due">
 
     <label>📘 รายวิชา</label>
-    <input type="text" id="subject">
+    <input type="text" id="subject" placeholder="เช่น คณิตศาสตร์">
 
-    <label>📝 ชื่องาน</label>
-    <input type="text" id="title">
-
-    <label>👩‍🏫 ครูผู้สอน</label>
-    <input type="text" id="teacher">
-
-    <label>📄 รายละเอียดงาน</label>
+    <label>📝 รายละเอียด</label>
     <textarea id="detail" class="detail-box"
-      placeholder="พิมพ์รายละเอียดการบ้าน..."></textarea>
+      placeholder="โน้ตเพิ่มเติม..."></textarea>
 
     <div class="actions">
-      <button class="done">✔ งานเสร็จแล้ว</button>
-      <button class="delete">🗑 ลบงาน</button>
+      <button class="done">✔ เสร็จแล้ว</button>
+      <button class="delete">🗑 ลบ</button>
       <button class="save">💾 บันทึก</button>
       <button class="cancel">ยกเลิก</button>
     </div>

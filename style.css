@@ -1,75 +1,79 @@
 :root {
-  --primary: #6366f1; --primary-dark: #4f46e5;
-  --success: #10b981; --danger: #f43f5e;
-  --secondary: #94a3b8; --bg: #f8fafc;
+  --primary: #6366f1;
+  --secondary: #a855f7;
+  --bg: #f0f2f5;
+  --white: #ffffff;
+  --success: #10b981;
+  --danger: #f43f5e;
+  --text: #1e293b;
 }
 
 * { box-sizing: border-box; font-family: 'Itim', cursive; }
-body { margin: 0; background: var(--bg); color: #1e293b; padding-bottom: 40px; }
+body { margin: 0; background-color: var(--bg); color: var(--text); padding-bottom: 50px; }
 
-/* Header */
-.topbar { 
+/* Top Bar */
+.topbar {
   background: white; padding: 15px 20px; display: flex; 
   justify-content: space-between; align-items: center;
-  position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-.brand { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-.add-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; }
-.sub-btn { background: #f1f5f9; color: #475569; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; }
+.brand { font-size: 1.4rem; font-weight: bold; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* Buttons Header */
+.btn-add-main { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+.btn-sub-manage { background: #f1f5f9; color: #475569; border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; margin-right: 8px; }
 
 /* Summary Cards */
-.summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 700px; margin: auto; }
-.sum-card { border-radius: 20px; padding: 20px; color: white; transition: 0.3s; }
-.sum-card.pending { background: linear-gradient(135deg, #6366f1, #a855f7); }
-.sum-card.soon { background: linear-gradient(135deg, #f43f5e, #fb923c); }
-.sum-card h3 { margin: 0; font-size: 0.9rem; opacity: 0.9; }
-.sum-card span { font-size: 2rem; font-weight: bold; }
+.summary-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; max-width: 600px; margin: auto; }
+.sum-card { border-radius: 24px; padding: 20px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; }
+.sum-card.pending { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+.sum-card.soon { background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%); }
+.sum-card h3 { margin: 0; font-size: 1rem; opacity: 0.9; }
+.sum-card span { font-size: 2.5rem; font-weight: bold; }
 
-/* Filter Bar */
-.filter-wrapper { display: flex; align-items: center; max-width: 700px; margin: 0 auto 20px; padding: 0 20px; gap: 10px; }
-.filter-scroll { 
-  display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; 
-  scrollbar-width: none; cursor: grab; user-select: none;
-}
+/* Filter Chips */
+.filter-wrapper { display: flex; align-items: center; max-width: 600px; margin: 10px auto; padding: 0 20px; gap: 10px; }
+.filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; cursor: grab; }
 .filter-scroll::-webkit-scrollbar { display: none; }
-.filter-chip { 
-  background: white; border: 1.5px solid #e2e8f0; padding: 6px 18px; 
-  border-radius: 20px; white-space: nowrap; cursor: pointer; font-weight: 500;
-}
-.filter-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+.filter-chip { background: white; border: none; padding: 8px 20px; border-radius: 20px; white-space: nowrap; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: 0.2s; }
+.filter-chip.active { background: var(--primary); color: white; font-weight: bold; transform: scale(1.05); }
 
 /* Task List */
-.task-list { max-width: 700px; margin: auto; padding: 0 20px; }
+.task-list { max-width: 600px; margin: auto; padding: 0 20px; }
 .task-item { 
-  background: white; padding: 18px; border-radius: 18px; margin-bottom: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer; border-left: 6px solid #e2e8f0;
+  background: white; padding: 20px; border-radius: 22px; margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; transition: 0.3s;
+  border-left: 8px solid #e2e8f0;
 }
-.task-item.done-card { border-left-color: var(--success); opacity: 0.6; }
+.task-item:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+.task-item.done-card { border-left-color: var(--success); opacity: 0.7; }
 
-/* Modal & Buttons */
-.modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+/* Modals */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
 .hidden { display: none; }
-.modal-card { background: white; width: 100%; max-width: 450px; padding: 25px; border-radius: 24px; max-height: 90vh; overflow-y: auto; }
-.modal-card label { display: block; margin-top: 15px; font-weight: bold; color: #64748b; font-size: 0.85rem; }
-.modal-card input, .modal-card select, .modal-card textarea {
-  width: 100%; padding: 12px; margin-top: 6px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 1rem;
+.modal-card.glass { background: rgba(255, 255, 255, 0.95); width: 100%; max-width: 420px; padding: 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3); }
+
+/* Modal Inputs */
+.input-group { margin-bottom: 15px; }
+.input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #64748b; font-size: 0.9rem; }
+.input-group input, .input-group select, .input-group textarea {
+  width: 100%; padding: 12px; border-radius: 14px; border: 1.5px solid #e2e8f0; background: #f8fafc; font-size: 1rem;
 }
 
-/* จุดที่แก้: ปุ่มขนาดเท่ากัน */
-.modal-actions-grid { 
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 25px; 
-}
-.btn-primary { background: var(--primary); color: white; grid-column: span 2; }
-.btn-secondary { background: #f1f5f9; color: #475569; }
-.btn-success { background: #dcfce7; color: #15803d; }
-.btn-danger { background: #fee2e2; color: #b91c1c; }
-.btn-primary, .btn-secondary, .btn-success, .btn-danger {
-  border: none; padding: 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.95rem;
-}
-.full-width { width: 100%; margin-top: 15px; }
+/* Modal Grid Buttons (จุดสำคัญที่ปุ่มคู่กัน) */
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.btn-save { background: var(--primary); color: white; grid-column: span 1; }
+.btn-cancel { background: #e2e8f0; color: #475569; }
+.btn-done { background: #dcfce7; color: #15803d; }
+.btn-delete { background: #fee2e2; color: #b91c1c; }
+.btn-gray { background: #f1f5f9; color: #475569; }
 
-/* Management List */
-.sub-manage-list { margin: 15px 0; max-height: 200px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 12px; }
-.sub-item { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #f1f5f9; align-items: center; }
-.add-subject-row { display: flex; gap: 8px; }
-.add-subject-row button { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 10px; }
+.modal-grid button, .btn-full { border: none; padding: 15px; border-radius: 16px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+.modal-grid button:active { transform: scale(0.95); }
+.btn-full { width: 100%; margin-top: 10px; }
+
+/* Subject Management List */
+.sub-manage-list { margin: 15px 0; max-height: 180px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 15px; }
+.sub-row { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; align-items: center; }
+.add-sub-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.add-sub-row button { background: var(--secondary); color: white; border: none; padding: 0 20px; border-radius: 12px; }

@@ -13,9 +13,10 @@
   <div class="brand">
     <span class="icon">📚</span> My Homework
   </div>
-  <button id="addBtn" class="add-btn">
-    <span class="icon">✨</span> เพิ่มงาน
-  </button>
+  <div class="top-actions">
+    <button id="subjectBtn" class="sub-btn">📂 วิชา</button>
+    <button id="addBtn" class="add-btn">✨ เพิ่ม</button>
+  </div>
 </header>
 
 <section class="summary">
@@ -35,27 +36,42 @@
   </div>
 </section>
 
+<nav id="filterBar" class="filter-scroll"></nav>
+
 <main id="list" class="task-list"></main>
+
+<div id="subModal" class="modal hidden">
+  <div class="modal-card small-card">
+    <h2>📂 หมวดหมู่วิชา</h2>
+    <div class="add-subject-row">
+      <input type="text" id="newSubjectInput" placeholder="ชื่อวิชาใหม่...">
+      <button id="addNewSubjectBtn">＋</button>
+    </div>
+    <ul id="subjectList" class="subject-list"></ul>
+    <button class="cancel full-width" id="closeSubBtn">ปิดหน้าต่าง</button>
+  </div>
+</div>
 
 <div id="modal" class="modal hidden">
   <div class="modal-card">
-    <h2>✏️ รายละเอียดงาน</h2>
+    <h2 id="modalTitle">✏️ รายละเอียดงาน</h2>
 
     <label>🏷️ ชื่องาน *</label>
-    <input type="text" id="title" placeholder="เช่น การบ้านคณิตฯ">
+    <input type="text" id="title" placeholder="เช่น การบ้านบทที่ 1">
 
     <label>⏰ วันที่ส่ง *</label>
     <input type="date" id="due">
 
     <label>📘 รายวิชา</label>
-    <input type="text" id="subject" placeholder="เช่น คณิตศาสตร์">
+    <select id="subject">
+      <option value="">-- เลือกวิชา --</option>
+    </select>
 
     <label>📝 รายละเอียด</label>
-    <textarea id="detail" class="detail-box"
-      placeholder="โน้ตเพิ่มเติม..."></textarea>
+    <textarea id="detail" class="detail-box" placeholder="โน้ตเพิ่มเติม..."></textarea>
 
     <div class="actions">
-      <button class="done">✔ เสร็จแล้ว</button>
+      <button class="done" id="toggleDoneBtn">✔ เสร็จแล้ว</button>
       <button class="delete">🗑 ลบ</button>
       <button class="save">💾 บันทึก</button>
       <button class="cancel">ยกเลิก</button>

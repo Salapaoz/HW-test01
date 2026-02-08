@@ -1,316 +1,221 @@
 /* --- STATE --- */
 let data = JSON.parse(localStorage.getItem("hw") || "[]");
-let subjects = JSON.parse(localStorage.getItem("subjects") || '["คณิตศาสตร์", "วิทยาศาสตร์", "ภาษาไทย", "ภาษาอังกฤษ", "สังคม"]');
+let subjects = JSON.parse(localStorage.getItem("subjects") || '["คณิตศาสตร์", "วิทยาศาสตร์", "ภาษาไทย", "ภาษาอังกฤษ"]');
 let editingId = null;
-let currentFilter = 'All'; // [ใหม่] เก็บค่าวิชาที่เลือกดูอยู่
+let currentFilter = 'All';
 
 /* --- ELEMENTS --- */
 const list = document.getElementById("list");
 const modal = document.getElementById("modal");
 const subModal = document.getElementById("subModal");
 
+const fixedFilter = document.getElementById("fixedFilter");
+const subjectScroll = document.getElementById("subjectScroll");
+
+// ฟอร์ม
+const titleInput = document.getElementById("title");
+const dueInput = document.getElementById("due");
+const subjectSelect = document.getElementById("subjectSelect");
+const detailInput = document.getElementById("detail");
+
+// ปุ่ม
 const addBtn = document.getElementById("addBtn");
 const subjectBtn = document.getElementById("subjectBtn");
-
-const due = document.getElementById("due");
-const subjectSelect = document.getElementById("subject");
-const title = document.getElementById("title");
-const detail = document.getElementById("detail");
-
-const saveBtn = document.querySelector(".save");
-const cancelBtn = document.querySelector(".cancel");
+const saveBtn = document.getElementById("saveBtn");
+const deleteBtn = document.getElementById("deleteBtn");
 const toggleDoneBtn = document.getElementById("toggleDoneBtn");
-const deleteBtn = document.querySelector(".delete");
-
-const pendingBox = document.getElementById("pendingBox");
-const soonBox = document.getElementById("soonBox");
-
-// Filter & Subject Management
-const filterBar = document.getElementById("filterBar"); // [ใหม่]
-const newSubjectInput = document.getElementById("newSubjectInput");
-const addNewSubjectBtn = document.getElementById("addNewSubjectBtn");
-const subjectList = document.getElementById("subjectList");
+const cancelModalBtn = document.getElementById("cancelModalBtn");
 const closeSubBtn = document.getElementById("closeSubBtn");
+const addNewSubjectBtn = document.getElementById("addNewSubjectBtn");
 
-/* --- SUBJECT & FILTER LOGIC --- */
+/* --- FILTER LOGIC --- */
 
-function saveSubjects() {
-  localStorage.setItem("subjects", JSON.stringify(subjects));
-}
-
-// [ใหม่] ฟังก์ชันสร้างปุ่มตัวกรองด้านบน
 function renderFilterBar() {
-  filterBar.innerHTML = "";
-  
-  // ปุ่ม "ทั้งหมด"
-  const allBtn = document.createElement("button");
-  allBtn.className = `filter-chip ${currentFilter === 'All' ? 'active' : ''}`;
-  allBtn.textContent = "🌈 ทั้งหมด";
-  allBtn.onclick = () => {
-    currentFilter = 'All';
-    renderFilterBar();
-    render();
-  };
-  filterBar.appendChild(allBtn);
+    fixedFilter.innerHTML = "";
+    subjectScroll.innerHTML = "";
 
-  // ปุ่มวิชาต่างๆ
-  subjects.forEach(sub => {
-    const btn = document.createElement("button");
-    btn.className = `filter-chip ${currentFilter === sub ? 'active' : ''}`;
-    btn.textContent = sub;
-    btn.onclick = () => {
-      currentFilter = sub;
-      renderFilterBar();
-      render();
-    };
-    filterBar.appendChild(btn);
-  });
+    // ปุ่มทั้งหมด (Fixed)
+    const allBtn = document.createElement("button");
+    allBtn.className = `filter-chip ${currentFilter === 'All' ? 'active' : ''}`;
+    allBtn.textContent = "🌈 ทั้งหมด";
+    allBtn.onclick = () => { currentFilter = 'All'; renderFilterBar(); render(); };
+    fixedFilter.appendChild(allBtn);
+
+    // ปุ่มรายวิชา (Scrollable)
+    subjects.forEach(sub => {
+        const btn = document.createElement("button");
+        btn.className = `filter-chip ${currentFilter === sub ? 'active' : ''}`;
+        btn.textContent = sub;
+        btn.onclick = () => { currentFilter = sub; renderFilterBar(); render(); };
+        subjectScroll.appendChild(btn);
+    });
 }
+
+/* --- SUBJECT MANAGEMENT --- */
 
 function renderSubjectOptions() {
-  // 1. Dropdown ในหน้าเพิ่มงาน
-  subjectSelect.innerHTML = '<option value="">-- เลือกวิชา --</option>';
-  subjects.forEach(sub => {
-    const opt = document.createElement("option");
-    opt.value = sub;
-    opt.textContent = sub;
-    subjectSelect.appendChild(opt);
-  });
+    // อัปเดต Dropdown
+    subjectSelect.innerHTML = '<option value="">-- ทั่วไป --</option>';
+    subjects.forEach(sub => {
+        const opt = document.createElement("option");
+        opt.value = sub;
+        opt.textContent = sub;
+        subjectSelect.appendChild(opt);
+    });
 
-  // 2. รายการในหน้าจัดการวิชา (ลบ)
-  subjectList.innerHTML = "";
-  subjects.forEach((sub, index) => {
-    const li = document.createElement("li");
-    li.className = "subject-item";
-    li.innerHTML = `
-      <span>${sub}</span>
-      <button class="del-sub-btn" onclick="deleteSubject(${index})">✕</button>
-    `;
-    subjectList.appendChild(li);
-  });
-}
-
-function addSubject() {
-  const val = newSubjectInput.value.trim();
-  if (val && !subjects.includes(val)) {
-    subjects.push(val);
-    saveSubjects();
-    renderSubjectOptions();
-    renderFilterBar(); // อัปเดตแถบด้านบนด้วย
-    newSubjectInput.value = "";
-  }
+    // อัปเดตรายการลบวิชา
+    const subjectList = document.getElementById("subjectList");
+    subjectList.innerHTML = "";
+    subjects.forEach((sub, index) => {
+        const li = document.createElement("li");
+        li.className = "subject-item";
+        li.innerHTML = `<span>${sub}</span><button style="color:red;border:none;background:none;cursor:pointer" onclick="deleteSubject(${index})">✕</button>`;
+        subjectList.appendChild(li);
+    });
 }
 
 window.deleteSubject = function(index) {
-  const subName = subjects[index];
-  if (confirm(`ต้องการลบวิชา "${subName}" ไหม?`)) {
-    // ถ้าลบวิชาที่กำลังกรองอยู่ ให้กลับไปเลือกทั้งหมด
-    if (currentFilter === subName) currentFilter = 'All';
-    
-    subjects.splice(index, 1);
-    saveSubjects();
-    renderSubjectOptions();
-    renderFilterBar();
-    render();
-  }
-};
-
-/* --- EVENT LISTENERS --- */
-
-subjectBtn.onclick = () => {
-  renderSubjectOptions();
-  subModal.classList.remove("hidden");
-};
-closeSubBtn.onclick = () => subModal.classList.add("hidden");
-addNewSubjectBtn.onclick = addSubject;
-
-function saveStorage() {
-  localStorage.setItem("hw", JSON.stringify(data));
+    if(confirm(`ลบวิชา "${subjects[index]}" ใช่ไหม?`)) {
+        if(currentFilter === subjects[index]) currentFilter = 'All';
+        subjects.splice(index, 1);
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+        renderSubjectOptions();
+        renderFilterBar();
+        render();
+    }
 }
 
-function clearForm() {
-  due.value = "";
-  subjectSelect.value = "";
-  title.value = "";
-  detail.value = "";
-  editingId = null;
-  toggleDoneBtn.className = "done";
-  toggleDoneBtn.textContent = "✔ เสร็จแล้ว";
-}
+addNewSubjectBtn.onclick = () => {
+    const val = document.getElementById("newSubjectInput").value.trim();
+    if(val && !subjects.includes(val)) {
+        subjects.push(val);
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+        document.getElementById("newSubjectInput").value = "";
+        renderSubjectOptions();
+        renderFilterBar();
+    }
+};
+
+/* --- MODAL CONTROL --- */
 
 addBtn.onclick = () => {
-  clearForm();
-  renderSubjectOptions();
-  // ถ้ากำลังเลือกกรองวิชาไหนอยู่ ให้ Auto เลือกวิชานั้นในฟอร์มเลย
-  if (currentFilter !== 'All') {
-    subjectSelect.value = currentFilter;
-  }
-  
-  toggleDoneBtn.style.display = "none";
-  deleteBtn.style.display = "none";
-  document.getElementById("modalTitle").innerText = "✨ เพิ่มงานใหม่";
-  modal.classList.remove("hidden");
+    editingId = null;
+    titleInput.value = "";
+    dueInput.value = "";
+    detailInput.value = "";
+    subjectSelect.value = (currentFilter !== 'All') ? currentFilter : "";
+    
+    deleteBtn.style.display = "none";
+    toggleDoneBtn.style.display = "none";
+    document.getElementById("modalTitle").innerText = "✨ เพิ่มงานใหม่";
+    renderSubjectOptions();
+    modal.classList.remove("hidden");
 };
 
-cancelBtn.onclick = () => modal.classList.add("hidden");
+// แก้ปัญหาปุ่มยกเลิกใช้ไม่ได้
+cancelModalBtn.onclick = () => modal.classList.add("hidden");
+closeSubBtn.onclick = () => subModal.classList.add("hidden");
+subjectBtn.onclick = () => { renderSubjectOptions(); subModal.classList.remove("hidden"); };
 
-window.onclick = (e) => {
-  if (e.target === modal) modal.classList.add("hidden");
-  if (e.target === subModal) subModal.classList.add("hidden");
-};
+/* --- CORE FUNCTIONS --- */
 
-/* SAVE */
 saveBtn.onclick = () => {
-  if (!title.value || !due.value) {
-    alert("กรุณากรอกชื่องานและวันที่ส่งครับ ✨");
-    return;
-  }
+    if(!titleInput.value || !dueInput.value) return alert("กรอกชื่อและวันส่งด้วยจ้า");
+    
+    const hw = {
+        id: editingId || Date.now(),
+        title: titleInput.value,
+        due: dueInput.value,
+        subject: subjectSelect.value,
+        detail: detailInput.value,
+        done: editingId ? data.find(x => x.id === editingId).done : false
+    };
 
-  const formData = {
-    due: due.value,
-    subject: subjectSelect.value,
-    title: title.value,
-    detail: detail.value
-  };
+    if(editingId) {
+        const i = data.findIndex(x => x.id === editingId);
+        data[i] = hw;
+    } else {
+        data.push(hw);
+    }
 
-  if (editingId) {
-    const i = data.findIndex(x => x.id === editingId);
-    if (i !== -1) data[i] = { ...data[i], ...formData };
-  } else {
-    data.push({ id: Date.now(), done: false, ...formData });
-  }
-
-  saveStorage();
-  modal.classList.add("hidden");
-  render();
-};
-
-/* TOGGLE DONE */
-toggleDoneBtn.onclick = () => {
-  if (!editingId) return;
-  const i = data.findIndex(x => x.id === editingId);
-  if (i === -1) return;
-
-  data[i].done = !data[i].done;
-  saveStorage();
-  modal.classList.add("hidden");
-  render();
+    localStorage.setItem("hw", JSON.stringify(data));
+    modal.classList.add("hidden");
+    render();
 };
 
 deleteBtn.onclick = () => {
-  if (!editingId) return;
-  if (confirm("ต้องการลบงานนี้จริงๆ ใช่ไหม?")) {
-    data = data.filter(x => x.id !== editingId);
-    saveStorage();
-    modal.classList.add("hidden");
-    render();
-  }
+    if(confirm("ลบงานนี้ใช่ไหม?")) {
+        data = data.filter(x => x.id !== editingId);
+        localStorage.setItem("hw", JSON.stringify(data));
+        modal.classList.add("hidden");
+        render();
+    }
 };
 
-/* RENDER MAIN LIST */
+toggleDoneBtn.onclick = () => {
+    const i = data.findIndex(x => x.id === editingId);
+    data[i].done = !data[i].done;
+    localStorage.setItem("hw", JSON.stringify(data));
+    modal.classList.add("hidden");
+    render();
+};
+
 function render() {
-  list.innerHTML = "";
-  let pending = 0;
-  let soon = 0;
+    list.innerHTML = "";
+    let pending = 0; let soon = 0;
 
-  // กรองข้อมูลตามวิชาที่เลือก (currentFilter)
-  let filteredData = data;
-  if (currentFilter !== 'All') {
-    filteredData = data.filter(item => item.subject === currentFilter);
-  }
+    // Filter
+    let filtered = data;
+    if(currentFilter !== 'All') filtered = data.filter(x => x.subject === currentFilter);
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (a.done !== b.done) return a.done ? 1 : -1;
-    return new Date(a.due) - new Date(b.due);
-  });
+    // Sort: งานไม่เสร็จขึ้นก่อน ตามด้วยวันส่ง
+    filtered.sort((a,b) => (a.done === b.done) ? new Date(a.due) - new Date(b.due) : a.done - b.done);
 
-  // คำนวณสถิติ (นับจากข้อมูลทั้งหมด ไม่ใช่แค่ที่กรอง)
-  data.forEach(h => {
-    if (!h.done) {
-      pending++;
-      const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
-      if (diff <= 1 && diff >= 0) soon++;
-    }
-  });
+    filtered.forEach(h => {
+        const diff = Math.ceil((new Date(h.due) - new Date().setHours(0,0,0,0)) / 86400000);
+        if(!h.done) {
+            pending++;
+            if(diff <= 1) soon++;
+        }
 
-  if (sortedData.length === 0) {
-    list.innerHTML = `<div style="text-align:center; margin-top:30px; color:#aaa;">
-      ${currentFilter === 'All' ? 'ยังไม่มีงานจ้า 🎉' : 'ไม่มีงานวิชานี้ ✨'}
-    </div>`;
-  }
+        const item = document.createElement("div");
+        item.className = `task-item ${h.done ? 'done-card' : ''}`;
+        
+        let statusText = h.done ? "เสร็จแล้ว" : (diff < 0 ? "เกินกำหนด" : `${diff} วัน`);
+        let statusCls = h.done ? "status-done" : (diff <= 1 ? "status-soon" : "status-pending");
 
-  sortedData.forEach(h => {
-    const diff = Math.ceil((new Date(h.due) - new Date()) / 86400000);
-    let statusText = `${diff} วัน`;
-    let statusCls = "status-pending";
-    let cardCls = "";
+        item.innerHTML = `
+            <div class="task-header">
+                <span class="task-title">${h.title}</span>
+                <span class="task-status ${statusCls}">${statusText}</span>
+            </div>
+            <div class="subject-tag">${h.subject ? '📘 ' + h.subject : '📝 ทั่วไป'}</div>
+        `;
+        item.onclick = () => openEdit(h);
+        list.appendChild(item);
+    });
 
-    if (h.done) {
-      statusText = "✔ เสร็จแล้ว";
-      statusCls = "status-done";
-      cardCls = "done-card";
-    } else {
-      if (diff < 0) {
-        statusText = "⚠️ เกินกำหนด";
-        statusCls = "status-soon";
-      } else if (diff <= 1) {
-        statusText = "🔥 ใกล้ส่ง";
-        statusCls = "status-soon";
-      }
-    }
-
-    const item = document.createElement("div");
-    item.className = `task-item ${cardCls}`;
-    item.innerHTML = `
-      <div class="task-header">
-        <h3 class="task-title">${h.title}</h3>
-        <span class="task-status ${statusCls}">${statusText}</span>
-      </div>
-      <div class="task-meta">
-        <span class="subject-tag">📘 ${h.subject || "ทั่วไป"}</span>
-        <span>📅 ${new Date(h.due).toLocaleDateString('th-TH')}</span>
-      </div>
-    `;
-
-    item.onclick = () => openDetail(h.id);
-    list.appendChild(item);
-  });
-
-  // อัปเดตตัวเลขหน้ากล่อง
-  pendingBox.textContent = pending;
-  soonBox.textContent = soon;
-
-  const pendingCard = document.querySelector(".sum-card.pending");
-  if (pending === 0) pendingCard.classList.add("none");
-  else pendingCard.classList.remove("none");
+    document.getElementById("pendingBox").textContent = pending;
+    document.getElementById("soonBox").textContent = soon;
 }
 
-function openDetail(id) {
-  const h = data.find(x => x.id === id);
-  if (!h) return;
-  editingId = id;
-  renderSubjectOptions();
+function openEdit(h) {
+    editingId = h.id;
+    renderSubjectOptions();
+    titleInput.value = h.title;
+    dueInput.value = h.due;
+    subjectSelect.value = h.subject;
+    detailInput.value = h.detail;
 
-  due.value = h.due;
-  subjectSelect.value = h.subject || "";
-  title.value = h.title;
-  detail.value = h.detail;
-
-  if (h.done) {
-    toggleDoneBtn.textContent = "↩ ยกเลิกสถานะเสร็จ";
-    toggleDoneBtn.className = "undone";
-  } else {
-    toggleDoneBtn.textContent = "✔ เสร็จแล้ว";
-    toggleDoneBtn.className = "done";
-  }
-
-  toggleDoneBtn.style.display = "block";
-  deleteBtn.style.display = "block";
-  document.getElementById("modalTitle").innerText = "✏️ แก้ไขงาน";
-  modal.classList.remove("hidden");
+    deleteBtn.style.display = "block";
+    toggleDoneBtn.style.display = "block";
+    toggleDoneBtn.innerText = h.done ? "↩ ยังไม่เสร็จ" : "✔ เสร็จแล้ว";
+    toggleDoneBtn.className = h.done ? "undone" : "done";
+    
+    document.getElementById("modalTitle").innerText = "✏️ แก้ไขงาน";
+    modal.classList.remove("hidden");
 }
 
-// เริ่มต้นทำงาน
+/* --- INIT --- */
 renderFilterBar();
-renderSubjectOptions();
 render();
